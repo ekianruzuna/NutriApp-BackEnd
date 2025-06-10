@@ -20,6 +20,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
+
 @RestController
 @RequestMapping("/api/usuario")
 @RequiredArgsConstructor
@@ -71,6 +73,12 @@ public class UsuarioController {
         usuarioService.insertarUsuarioCliente(usuario, idPerosonaBuscar);
 
         return ResponseEntity.ok("Usuario registrado correctamente como cliente");
+    }
+    @PutMapping("/perfil")
+    public ResponseEntity<String> actualizarPerfil (@RequestBody Usuario usuarioActualizado, Principal principal) throws AuthorityInvalidaException, PersonaInvalidaException, UsuarioInvalidoException {
+        String username = principal.getName();
+        boolean actualizado = usuarioService.ActualizarUsuarioCliente(username, usuarioActualizado).hasBody();
+        return ResponseEntity.ok(("Usuario actualizado correctamente como cliente"));
     }
 
 }

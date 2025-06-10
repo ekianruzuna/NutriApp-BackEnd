@@ -12,7 +12,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.AuthenticationException;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -89,5 +89,30 @@ public class UsuarioService implements UserDetailsService {
         usuarioRepository.save(usuario); //se guarda en la bdd
     }
 
+    @Transactional
+    public ResponseEntity<String> ActualizarUsuarioCliente (String username, Usuario usuarioActualizado) throws UsuarioInvalidoException{
+        Usuario usuario = usuarioRepository.findById(username).orElseThrow(() -> new UsuarioInvalidoException(username));
+        Persona persona = usuario.getPersona();
+        Persona datosNuevos = usuarioActualizado.getPersona();
+
+        persona.setNombre(datosNuevos.getNombre());
+        persona.setApellido(datosNuevos.getApellido());
+        persona.setDni(datosNuevos.getDni());
+        persona.setFechaNacimiento(datosNuevos.getFechaNacimiento());
+        persona.setEmail(datosNuevos.getEmail());
+        persona.setTelefono(datosNuevos.getTelefono());
+        persona.setDireccion(datosNuevos.getDireccion());
+        persona.setGenero(datosNuevos.getGenero());
+
+        personaService.guardar(persona);
+
+        if (usuarioActualizado.getPassword() != null && !usuarioActualizado.getPassword().isBlank()) {
+            usuario.setPassword(passwordEncoder.encode(usuarioActualizado.getPassword()));
+        }
+
+        usuarioRepository.save(usuario);
+
+        return ResponseEntity.ok("Perfil actualizado correctamente.");
+    }
 }
 
