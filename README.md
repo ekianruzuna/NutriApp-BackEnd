@@ -2,6 +2,9 @@
 
 Link Jira: https://tpfinal1.atlassian.net/jira/software/projects/SCRUM/boards/1?sprints=133%2C100&atlOrigin=eyJpIjoiYmJhYjY2MmNiMGRlNDcwYThkMjY3MjIwMmQ4NmMwYTciLCJwIjoiaiJ9
 
+
+DOCUMENTACION
+
 1. Introducción
 El presente documento contiene la Especificación de Requisitos de Software (ERS) para
 el sistema NutriApp.
