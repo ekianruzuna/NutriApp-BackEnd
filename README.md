@@ -1,4 +1,4 @@
-En los archivos del la rama main se encuentra el NutriApp.postman_collection que es el archivo para descargar e importar con los endpoints en postman para facilitar el testeo de la aplicacion
+¡IMPORTANTE! = En los archivos del la rama main se encuentra el NutriApp.postman_collection que es el archivo para descargar e importar con los endpoints en postman para facilitar el testeo de la aplicacion
 
 Link Jira: https://tpfinal1.atlassian.net/jira/software/projects/SCRUM/boards/1?sprints=133%2C100&atlOrigin=eyJpIjoiYmJhYjY2MmNiMGRlNDcwYThkMjY3MjIwMmQ4NmMwYTciLCJwIjoiaiJ9
 
