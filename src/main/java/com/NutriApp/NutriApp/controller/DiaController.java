@@ -2,6 +2,7 @@ package com.NutriApp.NutriApp.controller;
 
 
 import com.NutriApp.NutriApp.modelo.Dia;
+import com.NutriApp.NutriApp.modelo.dto.DiaDTO;
 import com.NutriApp.NutriApp.service.DiaService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -26,13 +27,12 @@ public class DiaController {
 
     private final DiaService diaService;
 
-    @Operation(summary = "Ver dia.", description = "Devuelve un dia con las comidas ingeridas y actividades realizadas.")
+    @Operation(summary = "Ver día completo", description = "Devuelve un día con las comidas ingeridas y actividades realizadas.")
     @GetMapping("/ver/completo")
-    public ResponseEntity<Dia> verDiaCompleto(@RequestParam LocalDate fecha){
-
+    public ResponseEntity<DiaDTO> verDiaCompleto(@RequestParam LocalDate fecha) {
         return ResponseEntity.ok(diaService.verDiaCompleto(fecha));
-
     }
+
 
     @Operation(summary = "Ver dias.", description = "Devuelve una lista de dias con las comidas ingeridas y actividades realizadas.")
     @GetMapping("ver/todos")

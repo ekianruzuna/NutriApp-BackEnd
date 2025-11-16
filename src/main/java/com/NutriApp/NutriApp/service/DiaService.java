@@ -1,10 +1,12 @@
 package com.NutriApp.NutriApp.service;
 
 import com.NutriApp.NutriApp.exceptions.DiaInvalidoException;
+import com.NutriApp.NutriApp.mapper.DiaMapper;
 import com.NutriApp.NutriApp.modelo.ActividadFisica;
 import com.NutriApp.NutriApp.modelo.ComidaIngerida;
 import com.NutriApp.NutriApp.modelo.Dia;
 import com.NutriApp.NutriApp.modelo.Usuario;
+import com.NutriApp.NutriApp.modelo.dto.DiaDTO;
 import com.NutriApp.NutriApp.repository.DiaRepository;
 import com.NutriApp.NutriApp.repository.UsuarioRepository;
 import jakarta.transaction.Transactional;
@@ -52,17 +54,15 @@ public class DiaService {
 
 
 
-    public Dia verDiaCompleto(LocalDate fecha){
-
+    public DiaDTO verDiaCompleto(LocalDate fecha) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         Usuario user = (Usuario) auth.getPrincipal();
 
         Dia dia = obtenerDiaPorFecha(fecha, user)
-                .orElseThrow(() -> new DiaInvalidoException("No se encontro el dia registrado con fecha: " + fecha));
+                .orElseThrow(() -> new DiaInvalidoException("No se encontró el día registrado con fecha: " + fecha));
 
-
-        return dia;
-
+        // Convertimos la entidad a DTO
+        return DiaMapper.toDiaDTO(dia);
     }
 
 

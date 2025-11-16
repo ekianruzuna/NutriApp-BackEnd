@@ -44,8 +44,10 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(PersonaInvalidaException.class)
-    public ResponseEntity<String> manejarPersonaInvalida(PersonaInvalidaException ex) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+    public ResponseEntity<Map<String, String>> manejarPersonaInvalida(PersonaInvalidaException ex) {
+        Map<String, String> error = new HashMap<>();
+        error.put("mensaje", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
     }
 
     @ExceptionHandler(DiaInvalidoException.class)
@@ -97,8 +99,10 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(UsuarioExistente.class)
-    public ResponseEntity<String> manejarPersonaInvalida(UsuarioExistente ex) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+    public ResponseEntity<Map<String, String>> manejarUsuarioExistente(UsuarioExistente ex) {
+        Map<String, String> error = new HashMap<>();
+        error.put("mensaje", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
     }
 
     @ExceptionHandler
