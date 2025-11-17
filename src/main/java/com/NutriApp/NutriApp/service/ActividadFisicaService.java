@@ -43,7 +43,7 @@ public class ActividadFisicaService {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         Usuario user = (Usuario) auth.getPrincipal();
 
-        Dia dia = diaService.obtenerODiaOCrear(user.getFechaActiva(), user);
+        Dia dia = diaService.obtenerODiaOCrear(user.getFechaActiva());
 
         ActividadFisica actividadFisica = new ActividadFisica();
         actividadFisica.setTipoActividad(tipoActividad);
@@ -65,7 +65,7 @@ public class ActividadFisicaService {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         Usuario user = (Usuario) auth.getPrincipal();
 
-        Dia dia = diaService.obtenerODiaOCrear(fecha, user);
+        Dia dia = diaService.obtenerODiaOCrear(fecha);
 
         ActividadFisica actividadFisica = new ActividadFisica();
         actividadFisica.setTipoActividad(tipoActividad);

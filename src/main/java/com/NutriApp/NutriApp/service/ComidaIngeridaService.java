@@ -39,7 +39,7 @@ public class ComidaIngeridaService {
         Usuario user = (Usuario) auth.getPrincipal();
 
         // Buscás el Día o lo creás si no existe
-        Dia dia = diaService.obtenerODiaOCrear(fecha, user);
+        Dia dia = diaService.obtenerODiaOCrear(fecha);
 
         // Buscás si ya existe una comida igual ese día
         Optional<ComidaIngerida> comidaExistente = comidaIngeridaRepository
