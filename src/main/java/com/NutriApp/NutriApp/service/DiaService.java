@@ -36,15 +36,21 @@ public class DiaService {
 
 
     // Devuelve un día por fecha, o lo crea si no existe
-    public Dia obtenerODiaOCrear(LocalDate fecha, Usuario usuario) {
-        return diaRepository.findByFechaAndUsuario(fecha, usuario)
+    public Dia obtenerODiaOCrear(LocalDate fecha) {
+
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Usuario user = (Usuario) auth.getPrincipal();
+
+        return diaRepository.findByFechaAndUsuario(fecha, user)
                 .orElseGet(() -> {
                     Dia nuevoDia = new Dia();
                     nuevoDia.setFecha(fecha);
-                    nuevoDia.setUsuario(usuario);
+                    nuevoDia.setUsuario(user);
                     guardar(nuevoDia);
                     return nuevoDia;
                 });
+
+
     }
 
     // Obtener un día por fecha
@@ -53,13 +59,11 @@ public class DiaService {
     }
 
 
-
     public DiaDTO verDiaCompleto(LocalDate fecha) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         Usuario user = (Usuario) auth.getPrincipal();
 
-        Dia dia = obtenerDiaPorFecha(fecha, user)
-                .orElseThrow(() -> new DiaInvalidoException("No se encontró el día registrado con fecha: " + fecha));
+        Dia dia = obtenerODiaOCrear(fecha);
 
         // Convertimos la entidad a DTO
         return DiaMapper.toDiaDTO(dia);
@@ -74,7 +78,7 @@ public class DiaService {
 
         List<Dia> dias = usuarioConDias.getDias();
 
-        if (dias.isEmpty()){
+        if (dias.isEmpty()) {
             throw new DiaInvalidoException("El usuario todavia no tiene dias cargados ");
         }
 

@@ -33,7 +33,7 @@ public class AuthController {
             return ResponseEntity.ok(res);
         } catch (UsuarioInexistenteException | BadCredentialsException e) {
             // Usuario o contraseña incorrectos
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(e.getMessage());
         } catch (Exception e) {
             // Otro error inesperado
