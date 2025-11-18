@@ -3,6 +3,8 @@ package com.NutriApp.NutriApp.repository;
 import com.NutriApp.NutriApp.modelo.ComidaFavorita;
 import com.NutriApp.NutriApp.modelo.Usuario;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -26,5 +28,8 @@ public interface ComidaFavoritaRepository extends JpaRepository<ComidaFavorita, 
             String nombrePaquete, long comidaId, Usuario usuario
     );
 
-
+    // Listar todas las comidas favoritas de un paquete, para ese usuario
+    List<ComidaFavorita> findAllByUsuario(
+            Usuario usuario
+    );
 }

@@ -1,6 +1,7 @@
 package com.NutriApp.NutriApp.controller;
 
 import com.NutriApp.NutriApp.modelo.dto.ComidaFavoritaDTO;
+import com.NutriApp.NutriApp.modelo.dto.ComidaFavoritaSalidaDTO;
 import com.NutriApp.NutriApp.modelo.dto.ComidaIngeridaDTO;
 import com.NutriApp.NutriApp.modelo.dto.ModificarCantidadComidaFavoritaDTO;
 import com.NutriApp.NutriApp.modelo.ComidaFavorita;
@@ -12,12 +13,16 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 @Validated
 @RestController
 @RequestMapping("/comidas-favoritas")
@@ -52,6 +57,15 @@ public class ComidaFavoritaController {
         }
     }
 
+    // 🔹 Listar todas las comidas favoritas de un usuario
+    @GetMapping("/usuario")
+    public ResponseEntity<List<ComidaFavoritaSalidaDTO>> listarPorUsuario() {
+        List<ComidaFavoritaSalidaDTO> lista = comidaFavoritaService.listarComidasFavoritasPorUsuario();
+        return ResponseEntity.ok(lista);
+    }
+
+
+
     // Eliminar comida favorita por paquete y comidaId
     @Operation(summary = "Eliminar alimento de una comida favorita.", description = "Elimina un alimento de un paquete de comidas favoritas.")
     @DeleteMapping("/eliminar")
@@ -77,23 +91,30 @@ public class ComidaFavoritaController {
         return ResponseEntity.ok(favoritas);
     }
 
-    // Agregar paquete completo a comidas ingeridas (día)
-    @Operation(summary = "Agregar comida favorita a un dia.", description = "Agrega un un paquete de comidas favoritas a un dia especifico.")
-    @PostMapping("/agregar-paquete-a-dia")
-    public ResponseEntity<String> agregarPaqueteADia(@Parameter(description = "Nombre Comida Favorita") @RequestParam String nombrePaquete,
-                                                     @Parameter(description = "Momento del dia") @RequestParam TipoComida tipo,
-                                                     @Parameter(description = "Fecha") @RequestParam LocalDate dia) {
+    @PostMapping(value = "/agregar-paquete-a-dia", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Map<String,String>> agregarPaqueteADia(
+            @RequestParam String nombrePaquete,
+            @RequestParam TipoComida tipo,
+            @RequestParam LocalDate dia) {
+
+        Map<String,String> resp = new HashMap<>();
         try {
-            comidaFavoritaService.agregarComidaFavoritaaIngerida(
-                    nombrePaquete,
-                    tipo,
-                    dia
-            );
-            return ResponseEntity.ok("Paquete agregado al día correctamente.");
+            comidaFavoritaService.agregarComidaFavoritaaIngerida(nombrePaquete, tipo, dia);
+            resp.put("mensaje", "Paquete agregado al día correctamente.");
+            return ResponseEntity.ok()
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body(resp);
+
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error: " + e.getMessage());
+            resp.put("error", e.getMessage());
+            return ResponseEntity.badRequest()
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body(resp);
         }
     }
+
+
+
 
 
 }

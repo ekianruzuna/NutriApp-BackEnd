@@ -28,6 +28,6 @@ public class AlimentoGlobalController {
     @Operation(summary = "Buscar alimentos en la api y en nuestra bdd.", description = "Devuleve una lista con los alimentos obtenidos de la api y de nuestra bdd combinados.")
     @GetMapping("/buscar")
     public ResponseEntity<List<AlimentoBusquedaDTO>> buscarPorNombre (@RequestParam String nombreComida) throws Exception{
-        return ResponseEntity.ok(alimentoGlobalService.filtarAlimentosCombinadosPorNombreComida(nombreComida));
+        return ResponseEntity.ok(alimentoGlobalService.filtrarAlimentosCombinadosPorNombreComida(nombreComida));
     }
 }

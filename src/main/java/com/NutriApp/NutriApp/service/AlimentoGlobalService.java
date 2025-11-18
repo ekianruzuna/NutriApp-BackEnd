@@ -30,26 +30,28 @@ public class AlimentoGlobalService {
 
     //lista alimentos combinando de la api con los de nuestra BDD
     @Transactional
-    public List<AlimentoBusquedaDTO>  filtarAlimentosCombinadosPorNombreComida (String nombreComida) throws Exception{
+    public List<AlimentoBusquedaDTO> filtrarAlimentosCombinadosPorNombreComida(String nombreComida) throws Exception {
+        // Obtenemos los alimentos de nuestra BDD
+        List<AlimentoBusquedaDTO> alimentosBDD = alimentoIngresadoPorUsuarioService
+                .convertirListaDTO(
+                        alimentoIngresadoPorUsuarioService.filtrarAlimentosPorNombreComidaSinException(nombreComida)
+                );
 
-        //obtenemos una lista de alimentos de nustra BDD y la convierto a una de AliemtnoBusquedaDTO para que este igual a los de la api
-        List<AlimentoBusquedaDTO> alimentosBDD = alimentoIngresadoPorUsuarioService.convertirListaDTO(alimentoIngresadoPorUsuarioService.filtrarAlimentosPorNombreComidaSinException(nombreComida));
-
-        //obtenemos los alimentos de la api
+        // Obtenemos los alimentos de la API externa
         List<AlimentoBusquedaDTO> alimentosAPI = foodDataService.buscarAlimentosPorNombreSinException(nombreComida);
 
-        //validamos las dos listas
-        if (alimentosBDD.isEmpty() && alimentosAPI.isEmpty()){
-            throw new AlimentoInvalidoException("No se encotro ninguna comida con el nombre = " + nombreComida);
+        // Creamos la lista unificada
+        List<AlimentoBusquedaDTO> listaUnificada = new ArrayList<>();
+        if (alimentosBDD != null) listaUnificada.addAll(alimentosBDD);
+        if (alimentosAPI != null) listaUnificada.addAll(alimentosAPI);
+
+        // Opcional: log si no hay resultados
+        if (listaUnificada.isEmpty()) {
+            System.out.println("No se encontró ninguna comida con el nombre = " + nombreComida);
+            // No lanzamos excepción, devolvemos lista vacía
         }
 
-        //creamos la lista que va a unificar
-        List<AlimentoBusquedaDTO> listasUnificadas = new ArrayList<>();
-
-        //unificamos las dos listas
-        listasUnificadas.addAll(alimentosBDD);
-        listasUnificadas.addAll(alimentosAPI);
-
-        return listasUnificadas;
+        return listaUnificada;
     }
+
 }

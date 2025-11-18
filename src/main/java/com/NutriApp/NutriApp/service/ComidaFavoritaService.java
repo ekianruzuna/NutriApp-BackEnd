@@ -1,6 +1,7 @@
 package com.NutriApp.NutriApp.service;
 
 import com.NutriApp.NutriApp.modelo.dto.ComidaFavoritaDTO;
+import com.NutriApp.NutriApp.modelo.dto.ComidaFavoritaSalidaDTO;
 import com.NutriApp.NutriApp.modelo.dto.MacronutrienteDTO;
 import com.NutriApp.NutriApp.modelo.dto.ModificarCantidadComidaFavoritaDTO;
 import com.NutriApp.NutriApp.exceptions.ComidaFavoritaException;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -30,6 +32,21 @@ public class ComidaFavoritaService {
     private final NutricionService nutricionService;
     private final AlimentoIngresadoPorUsuarioService alimentoIngresadoPorUsuarioService;
     private final ComidaIngeridaService comidaIngeridaService;
+
+    public List<ComidaFavoritaSalidaDTO> listarComidasFavoritasPorUsuario() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Usuario usuario = (Usuario) auth.getPrincipal();
+        List<ComidaFavorita> favoritas = comidaFavoritaRepository.findAllByUsuario(usuario);
+
+        return favoritas.stream()
+                .map(c -> new ComidaFavoritaSalidaDTO(
+                        c.getNombrePaquete(),
+                        c.getNombreComida(),
+                        c.getComidaId(),
+                        c.getCantidad()
+                ))
+                .collect(Collectors.toList());
+    }
 
     public void agregarComidaFavorita(ComidaFavoritaDTO comidaFavoritaDTO) {
 
