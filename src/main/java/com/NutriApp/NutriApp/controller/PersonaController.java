@@ -74,11 +74,10 @@ public class PersonaController {
     }
 
 
-    @Operation(summary = "Modificar datos de persona.", description = "Modifica los datos de persona del usuario logeado.")
+    @Operation(summary = "Modificar datos de persona.", description = "Modifica y devuelve los datos de persona actualizada del usuario logeado.")
     @PutMapping("/actualizar-persona")
-    public ResponseEntity<String> actualizarPersona(@Valid @RequestBody PersonaDTO personaDTO) {
-        personaService.actualizarDatosPersona(personaDTO);
-        return ResponseEntity.ok("Datos de persona actualizados correctamente");
+    public ResponseEntity<Persona> actualizarPersona(@Valid @RequestBody PersonaDTO personaDTO) {
+        return ResponseEntity.ok(personaService.actualizarDatosPersona(personaDTO));
     }
 
 

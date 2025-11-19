@@ -1,5 +1,6 @@
 package com.NutriApp.NutriApp.modelo;
 
+import com.NutriApp.NutriApp.modelo.dto.PersonaDTO;
 import com.NutriApp.NutriApp.modelo.enums.Genero;
 import com.NutriApp.NutriApp.modelo.enums.NivelActividadFisica;
 import com.NutriApp.NutriApp.modelo.enums.ObjetivoCaloricoTipo;
@@ -93,6 +94,20 @@ public class Persona {
         this.direccion = direccion;
         this.genero = genero;
         this.email = email;
+    }
+
+    //Transforma a un dto
+    public PersonaDTO toDTO(){
+        return new PersonaDTO(
+                nombre,
+                apellido,
+                dni,
+                fechaNacimiento,
+                telefono,
+                direccion,
+                genero,
+                email
+        );
     }
 
 }
