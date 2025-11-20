@@ -215,7 +215,7 @@ public class SolicitudService {
 
     //se fija en la solicitud que se quiere modificar y solo le setea los campos nuevos que vienen como entrada (no hace falta mandar todos los campos en la entrada)
     @Transactional
-    public String modificarMiSolicitud (String nombreComidaSolicitudModificar, SolicitudAltaAlimento solicitudNueva) throws SolicitudInvalidaException{
+    public SolicitudAltaAlimento modificarMiSolicitud (String nombreComidaSolicitudModificar, SolicitudAltaAlimento solicitudNueva) throws SolicitudInvalidaException{
         //validaciones
         if (alimentoIngresadoPorUsuarioService.existsByNombre(solicitudNueva.getNombreComida())){
             throw new SolicitudInvalidaException("El alimento ya existe con el nombre = " +solicitudNueva.getNombreComida());
@@ -244,7 +244,7 @@ public class SolicitudService {
 
         //guardamos el objeto modificado
         solicitudRespository.save(solicitudVieja.get());  //el save tambien reemplaza todos los valores de un objeto si ya esta creado en la bdd
-        return "Se modifico la solicitud con exito";
+        return solicitudVieja.get();
     }
 
     @Transactional

@@ -89,7 +89,7 @@ public class SolicitudController {
     //cualquiera que este registrado
     @Operation(summary = "Modificar una de mis solicitudes de alta de comida.", description = "Modifica una de las solicitudes de alta de comida.")
     @PutMapping("/modificar/miSolicitud")
-    public ResponseEntity<String> modificarMiSolicitud (String nombreComidaModificar, @RequestBody @Validated(ValidacionBasica.class) SolicitudAltaAlimento solicitudNueva){
+    public ResponseEntity<SolicitudAltaAlimento> modificarMiSolicitud (@RequestParam String nombreComidaModificar, @RequestBody @Validated(ValidacionBasica.class) SolicitudAltaAlimento solicitudNueva){
         return ResponseEntity.ok(solicitudService.modificarMiSolicitud(nombreComidaModificar, solicitudNueva));
     }
 
