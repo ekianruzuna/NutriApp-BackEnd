@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/rol")
-@PreAuthorize("hasRole('ADMIN')")
 @Tag(name = "Roles", description = "Operaciones con los roles")
 public class AuthorityController {
 
@@ -23,6 +22,7 @@ public class AuthorityController {
 
     @Operation(summary = "Cambiar rol a ADMIN.", description = "Cambia el rol de un usuario a ADMIN.")
     @PostMapping("/cambiar/admin")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<String> cambiarRolAdmin (@RequestParam String username) throws AuthorityInvalidaException {
         authorityService.cambiaRol_A_ADMIN(username);
 
@@ -31,6 +31,7 @@ public class AuthorityController {
 
     @Operation(summary = "Cambiar rol a CLIENTE.", description = "Cambia el rol de un usuario a CLIENTE.")
     @PostMapping("/cambiar/cliente")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<String> cambiarRolCliente (@RequestParam String username) throws AuthorityInvalidaException {
         authorityService.cambiaRol_A_CLIENTE(username);
 

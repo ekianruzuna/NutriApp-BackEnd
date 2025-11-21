@@ -71,6 +71,11 @@ public class SecurityConfig {
                         .requestMatchers("api/alimentos/detalle/{fdcId}").permitAll()
                         .requestMatchers("/auth/login", "/auth/registro").permitAll()
 
+                        //roles
+                        .requestMatchers("api/rol/cambiar/cliente").hasRole("ADMIN")
+                        .requestMatchers("api/rol/cambiar/admin").hasRole("ADMIN")
+                        .requestMatchers("api/rol/obtener").permitAll()
+
                         //personas
                         .requestMatchers("/api/persona/guardar").hasRole("ADMIN")
                         .requestMatchers("/api/persona/listar").hasRole("ADMIN")
