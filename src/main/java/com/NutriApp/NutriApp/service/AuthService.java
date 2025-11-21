@@ -1,17 +1,16 @@
 package com.NutriApp.NutriApp.service;
 
+import com.NutriApp.NutriApp.exceptions.UsuarioInexistenteException;
+import com.NutriApp.NutriApp.modelo.*;
 import com.NutriApp.NutriApp.modelo.dto.LoginRequest;
 import com.NutriApp.NutriApp.modelo.dto.LoginResponse;
 import com.NutriApp.NutriApp.modelo.dto.RegistroUsuarioRequest;
 import com.NutriApp.NutriApp.exceptions.PersonaInvalidaException;
 import com.NutriApp.NutriApp.exceptions.UsuarioExistente;
-import com.NutriApp.NutriApp.modelo.Authority;
-import com.NutriApp.NutriApp.modelo.PerfilNutricional;
-import com.NutriApp.NutriApp.modelo.Persona;
-import com.NutriApp.NutriApp.modelo.Usuario;
 import com.NutriApp.NutriApp.modelo.enums.Role;
 import com.NutriApp.NutriApp.repository.AuthorityRepository;
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -22,10 +21,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import java.time.LocalDate;
 import java.util.AbstractMap;
+import java.util.Collections;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 @Service
+@RequiredArgsConstructor
 public class AuthService {
 
     @Autowired
@@ -42,7 +44,6 @@ public class AuthService {
     private PersonaService personaService;
     @Autowired
     private PasswordEncoder passwordEncoder;
-
     @Autowired
     private MailService mailService;
 
@@ -128,5 +129,7 @@ public class AuthService {
         // Devolver token en la respuesta
         return new LoginResponse(token);
     }
+
+
 
 }

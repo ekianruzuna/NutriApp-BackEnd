@@ -70,7 +70,12 @@ public class SecurityConfig {
                         .requestMatchers("api/alimentos/buscar").permitAll()
                         .requestMatchers("api/alimentos/detalle/{fdcId}").permitAll()
                         .requestMatchers("/auth/login", "/auth/registro").permitAll()
-
+                        .requestMatchers("/verificacion/email/enviar-codigo", "/verificacion/email/verificar-codigo").permitAll()
+                        .requestMatchers("/auth/check-username").permitAll()
+                        .requestMatchers("/auth/check-email").permitAll()
+                        .requestMatchers("/auth/check-dni").permitAll()
+                        .requestMatchers("/auth/check-telefono").permitAll()
+                        .requestMatchers("/auth/google").permitAll()
                         //personas
                         .requestMatchers("/api/persona/guardar").hasRole("ADMIN")
                         .requestMatchers("/api/persona/listar").hasRole("ADMIN")

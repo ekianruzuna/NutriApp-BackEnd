@@ -1,13 +1,17 @@
 package com.NutriApp.NutriApp.controller;
 
 import com.NutriApp.NutriApp.exceptions.UsuarioInexistenteException;
+
+import com.NutriApp.NutriApp.modelo.Usuario;
 import com.NutriApp.NutriApp.modelo.dto.LoginRequest;
 import com.NutriApp.NutriApp.modelo.dto.LoginResponse;
 import com.NutriApp.NutriApp.modelo.dto.RegistroUsuarioRequest;
 import com.NutriApp.NutriApp.service.AuthService;
+import com.NutriApp.NutriApp.service.UsuarioValidationService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,14 +20,21 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
+import java.util.Map;
+
 @Validated
 @RestController // Define que esta clase manejará peticiones HTTP
 @RequestMapping("/auth") // El endpoint completo será /auth/login
 @Tag(name = "Autorizacion", description = "Operaciones de autorizacion")
+@RequiredArgsConstructor
 public class AuthController {
 
     @Autowired
     private AuthService authService;
+
+    private final UsuarioValidationService validationService;
 
     @Operation(summary = "Logearse.", description = "Devuelve un token del usuario logeado.")
     @PostMapping("/login")
@@ -46,6 +57,26 @@ public class AuthController {
     @PostMapping("/registro")
     public ResponseEntity<LoginResponse> registrarUsuario(@Valid @RequestBody RegistroUsuarioRequest request) {
         return ResponseEntity.ok(authService.registrarUsuario(request));
+    }
+
+    @GetMapping("/check-username")
+    public ResponseEntity<Map<String, Boolean>> checkUsername(@RequestParam String username) {
+        return ResponseEntity.ok(Map.of("disponible", validationService.usernameDisponible(username)));
+    }
+
+    @GetMapping("/check-email")
+    public ResponseEntity<Map<String, Boolean>> checkEmail(@RequestParam String email) {
+        return ResponseEntity.ok(Map.of("disponible", validationService.emailDisponible(email)));
+    }
+
+    @GetMapping("/check-dni")
+    public ResponseEntity<Map<String, Boolean>> checkDni(@RequestParam String dni) {
+        return ResponseEntity.ok(Map.of("disponible", validationService.dniDisponible(dni)));
+    }
+
+    @GetMapping("/check-telefono")
+    public ResponseEntity<Map<String, Boolean>> checkTelefono(@RequestParam String telefono) {
+        return ResponseEntity.ok(Map.of("disponible", validationService.telefonoDisponible(telefono)));
     }
 
 
