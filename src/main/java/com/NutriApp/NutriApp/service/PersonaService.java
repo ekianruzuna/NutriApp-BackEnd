@@ -13,6 +13,7 @@ import com.NutriApp.NutriApp.modelo.enums.Genero;
 import com.NutriApp.NutriApp.repository.PersonaRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.boot.model.source.spi.PluralAttributeElementSourceAssociation;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -73,11 +74,11 @@ public class PersonaService {
 
 // METODO QUE ACTUALIZA LOS DATOS DE LA PERSONA
 @Transactional
-public void actualizarDatosPersona(PersonaDTO personaDTO) {
+public Persona actualizarDatosPersona(PersonaDTO personaDTO) {
     Authentication auth = SecurityContextHolder.getContext().getAuthentication();
     Usuario user = (Usuario) auth.getPrincipal();
 
-    Persona personaActual = user.getPersona();
+    Persona personaActual = (user.getPersona());
 
     // Validaciones de unicidad con stream
     Stream.of(
@@ -116,6 +117,8 @@ public void actualizarDatosPersona(PersonaDTO personaDTO) {
 
     personaActual.setGenero(personaDTO.getGenero());
     personaRepository.save(personaActual);
+
+    return personaActual;
 }
 
     public Persona obtenerPorUsername(String username) throws PersonaInvalidaException {

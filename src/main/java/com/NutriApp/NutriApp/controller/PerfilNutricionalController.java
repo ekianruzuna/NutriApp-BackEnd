@@ -29,8 +29,7 @@ public class PerfilNutricionalController {
 
     @Operation(summary = "Modificar perfil nutricional.", description = "Modifica el perfil nutricional del usuario logeado.")
     @PutMapping("/actualizar")
-    public ResponseEntity<String> actualizarPerfil(@Valid @RequestBody PerfilNutricionalDTO perfilDTO) {
-        perfilNutricionalService.actualizarPerfilNutricional(perfilDTO);
-        return ResponseEntity.ok("Perfil nutricional actualizado correctamente.");
+    public ResponseEntity<PerfilNutricional> actualizarPerfil(@Valid @RequestBody PerfilNutricionalDTO perfilDTO) {
+        return ResponseEntity.ok(perfilNutricionalService.actualizarPerfilNutricional(perfilDTO));
     }
 }

@@ -76,6 +76,12 @@ public class SecurityConfig {
                         .requestMatchers("/auth/check-dni").permitAll()
                         .requestMatchers("/auth/check-telefono").permitAll()
                         .requestMatchers("/auth/google").permitAll()
+
+                        //roles
+                        .requestMatchers("api/rol/cambiar/cliente").hasRole("ADMIN")
+                        .requestMatchers("api/rol/cambiar/admin").hasRole("ADMIN")
+                        .requestMatchers("api/rol/obtener").permitAll()
+
                         //personas
                         .requestMatchers("/api/persona/guardar").hasRole("ADMIN")
                         .requestMatchers("/api/persona/listar").hasRole("ADMIN")

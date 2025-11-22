@@ -2,10 +2,14 @@ package com.NutriApp.NutriApp.service;
 
 import com.NutriApp.NutriApp.exceptions.AuthorityInvalidaException;
 import com.NutriApp.NutriApp.modelo.Authority;
+import com.NutriApp.NutriApp.modelo.Usuario;
 import com.NutriApp.NutriApp.modelo.enums.Role;
 import com.NutriApp.NutriApp.repository.AuthorityRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -55,5 +59,14 @@ public class AuthorityService {
         }
 
         authorityRepository.cambiarRol_A_CLIENTE(username);
+    }
+
+    public Authority obtenerRolLogeado () throws AuthorityInvalidaException{
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Usuario usuarioLogeado =  (Usuario) auth.getPrincipal();
+
+        return authorityRepository.findByUsuarioUsername(usuarioLogeado.getUsername())
+                .orElseThrow(() -> new AuthorityInvalidaException("El authority con el username = " +usuarioLogeado.getUsername()+ " no existe"));
+
     }
 }

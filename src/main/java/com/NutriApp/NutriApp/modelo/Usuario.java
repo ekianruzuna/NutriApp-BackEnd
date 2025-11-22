@@ -1,5 +1,6 @@
 package com.NutriApp.NutriApp.modelo;
 
+import com.NutriApp.NutriApp.modelo.dto.PersonaDTO;
 import com.NutriApp.NutriApp.modelo.enums.Role;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -122,5 +123,4 @@ public class Usuario implements UserDetails {
     public String getNombrePersona (){
         return persona.getNombre();
     }
-
 }

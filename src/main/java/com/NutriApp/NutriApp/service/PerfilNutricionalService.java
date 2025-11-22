@@ -65,7 +65,7 @@ public class PerfilNutricionalService {
     }
 
     @Transactional
-    public void actualizarPerfilNutricional(PerfilNutricionalDTO perfilDTO) {
+    public PerfilNutricional actualizarPerfilNutricional(PerfilNutricionalDTO perfilDTO) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         Usuario user = (Usuario) auth.getPrincipal();
         PerfilNutricional perfilExistente = user.getPerfilNutricional();
@@ -85,7 +85,12 @@ public class PerfilNutricionalService {
             PerfilNutricional nuevoPerfil = realizar_calculo_BMR(perfilDTO, user.getPersona().getGenero());
             user.setPerfilNutricional(nuevoPerfil);
             guardar(nuevoPerfil);
+
+            return  nuevoPerfil;
         }
+
+        return perfilExistente;
+
     }
 
 
