@@ -9,21 +9,23 @@ import com.NutriApp.NutriApp.exceptions.PersonaInvalidaException;
 import com.NutriApp.NutriApp.exceptions.UsuarioExistente;
 import com.NutriApp.NutriApp.modelo.enums.Role;
 import com.NutriApp.NutriApp.repository.AuthorityRepository;
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
+import com.google.api.client.http.javanet.NetHttpTransport;
+import com.google.api.client.json.jackson2.JacksonFactory;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
-
-import java.time.LocalDate;
-import java.util.AbstractMap;
-import java.util.Collections;
-import java.util.Map;
-import java.util.Optional;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;import java.time.LocalDate;
+import java.util.*;
 import java.util.stream.Stream;
 
 @Service
@@ -130,6 +132,22 @@ public class AuthService {
         return new LoginResponse(token);
     }
 
+    public GoogleIdToken.Payload verifyToken(String idTokenString) throws Exception {
 
+        GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(
+                new NetHttpTransport(),
+                new JacksonFactory()
+        )
+                .setAudience(Collections.singletonList("1014095084666-jr120vlq4cad4uregm9qpkclkes2je8r.apps.googleusercontent.com"))
+                .build();
+
+        GoogleIdToken idToken = verifier.verify(idTokenString);
+
+        if (idToken != null) {
+            return idToken.getPayload();
+        } else {
+            throw new IllegalArgumentException("Token inválido o no verificado");
+        }
+    }
 
 }
