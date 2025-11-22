@@ -100,6 +100,10 @@ public class SolicitudController {
         return ResponseEntity.ok(solicitudService.aceptarSolicitud(idSolicitud));
     }
 
+//    public ResponseEntity<> modificar_Y_Aceptar (@RequestParam long idSolicitud, @RequestBody @Validated(ValidacionBasica.class) SolicitudAltaAlimento solicitudAltaAlimento){
+//        ret
+//    }
+
     //solo admins
     @Operation(summary = "Rechazar una solicitud de alta de comida.", description = "Rechaza solicitud de alta de comida.")
     @DeleteMapping ("/rechazar")

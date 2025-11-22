@@ -11,6 +11,7 @@ import com.NutriApp.NutriApp.modelo.Persona;
 import com.NutriApp.NutriApp.modelo.Usuario;
 import com.NutriApp.NutriApp.modelo.enums.Role;
 import com.NutriApp.NutriApp.repository.AuthorityRepository;
+import com.NutriApp.NutriApp.service.Mail.MailService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -20,7 +21,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 
-import java.time.LocalDate;
 import java.util.AbstractMap;
 import java.util.Map;
 import java.util.stream.Stream;

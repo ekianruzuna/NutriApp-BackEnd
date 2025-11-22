@@ -7,10 +7,11 @@ import com.NutriApp.NutriApp.modelo.SolicitudAltaAlimento;
 import com.NutriApp.NutriApp.modelo.Usuario;
 import com.NutriApp.NutriApp.modelo.dto.AlimentoBusquedaDTO;
 import com.NutriApp.NutriApp.repository.SolicitudRespository;
-import com.NutriApp.NutriApp.repository.UsuarioRepository;
+import com.NutriApp.NutriApp.service.Mail.MailService;
+import com.NutriApp.NutriApp.service.Mail.ManjearMailAsync.MailEvent;
 import jakarta.transaction.Transactional;
-import org.aspectj.weaver.patterns.PerObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -41,6 +42,9 @@ public class SolicitudService {
 
     @Autowired
     private PersonaService personaService;
+
+    @Autowired
+    private ApplicationEventPublisher eventPublisher;
 
 
     @Transactional
@@ -263,10 +267,14 @@ public class SolicitudService {
         //se borra de la tabla la solicitud
         solicitudRespository.deleteById(solicitud.get().getId());
 
-        //se notifica al usuario que se acepto la solicitud
-        mailService.enviarMail(obtenerMail(solicitud.get().getUsername()),
+        //se notifica al usuario que se acepto la solicitud de forma asyncronica con disparador de eventos
+        // y listeners de esos eventos asi no afecta al @Transactional que tiene este metodo
+        eventPublisher.publishEvent(new MailEvent(
+                obtenerMail(solicitud.get().getUsername()),
                 "Aceptacion de solicitud",
-                "Su solicitud de alta de comida con el nombre '" + solicitud.get().getNombreComida() + "' fue aceptada");
+                "Su solicitud de alta de comida con el nombre '" + solicitud.get().getNombreComida() + "' fue aceptada")
+
+        );
 
         return "Solicitud aceptada con exito y alimento ingresado correctamente";
     }
