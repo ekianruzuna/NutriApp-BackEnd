@@ -74,7 +74,6 @@ public class SecurityConfig {
                         //roles
                         .requestMatchers("api/rol/cambiar/cliente").hasRole("ADMIN")
                         .requestMatchers("api/rol/cambiar/admin").hasRole("ADMIN")
-                        .requestMatchers("api/rol/obtener").permitAll()
 
                         //personas
                         .requestMatchers("/api/persona/guardar").hasRole("ADMIN")
@@ -92,6 +91,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/persona/obtener").hasRole("ADMIN")
                         .requestMatchers("/api/solicitud/aceptar").hasRole("ADMIN")
                         .requestMatchers("/api/solicitud/rechazar").hasRole("ADMIN")
+                        .requestMatchers("api/solicitud/modificarAndAceptar").hasRole("ADMIN")
 
                         //alimentos ingresados por el usuario
                         .requestMatchers("api/alimentos-usuario/listarTodos").hasRole("ADMIN")

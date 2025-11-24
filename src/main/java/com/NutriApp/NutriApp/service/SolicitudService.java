@@ -220,13 +220,19 @@ public class SolicitudService {
     //se fija en la solicitud que se quiere modificar y solo le setea los campos nuevos que vienen como entrada (no hace falta mandar todos los campos en la entrada)
     @Transactional
     public SolicitudAltaAlimento modificarMiSolicitud (String nombreComidaSolicitudModificar, SolicitudAltaAlimento solicitudNueva) throws SolicitudInvalidaException{
-        //validaciones
-        if (alimentoIngresadoPorUsuarioService.existsByNombre(solicitudNueva.getNombreComida())){
-            throw new SolicitudInvalidaException("El alimento ya existe con el nombre = " +solicitudNueva.getNombreComida());
-        }
 
-        if (solicitudRespository.existsByNombreComidaIgnoreCase(solicitudNueva.getNombreComida())){
-            throw new SolicitudInvalidaException("La solicitud ya existe con el nombre = " +solicitudNueva.getNombreComida());
+
+        //si el nombre del objeto nuevo no cambio con respecto a no modificado
+        if (!nombreComidaSolicitudModificar.equals(solicitudNueva.getNombreComida())){
+            //busca en las solicitudes para que no se pisen los nombres con otras solicitudes
+            if (solicitudRespository.existsByNombreComidaIgnoreCase(solicitudNueva.getNombreComida())){
+                throw new SolicitudInvalidaException("La solicitud ya existe con el nombre = " +solicitudNueva.getNombreComida());
+            }
+
+            //busca en los nombres de los alimentos ingresados por el usuario
+            if (alimentoIngresadoPorUsuarioService.existsByNombre(solicitudNueva.getNombreComida())){
+                throw new SolicitudInvalidaException("El alimento ya existe con el nombre = " +solicitudNueva.getNombreComida());
+            }
         }
 
 
@@ -249,6 +255,62 @@ public class SolicitudService {
         //guardamos el objeto modificado
         solicitudRespository.save(solicitudVieja.get());  //el save tambien reemplaza todos los valores de un objeto si ya esta creado en la bdd
         return solicitudVieja.get();
+    }
+
+
+    //ADMINS
+
+    @Transactional
+    public String modificar_Y_AceptarSolicitud (String nombreComidaSolicitudMoficiar, SolicitudAltaAlimento solicitudNueva){
+        System.out.println("Antes de la comprobacion");
+
+
+
+        System.out.println("Nombre de la solicitud vieja" + nombreComidaSolicitudMoficiar);
+        System.out.println("Nombre de la solicitud nueva" + solicitudNueva.getNombreComida());
+
+        //si el nombre del objeto nuevo no cambio con respecto a no modificado
+        if (!nombreComidaSolicitudMoficiar.equals(solicitudNueva.getNombreComida())){
+            //busca en las solicitudes para que no se pisen los nombres con otras solicitudes
+            if (solicitudRespository.existsByNombreComidaIgnoreCase(solicitudNueva.getNombreComida())){
+                throw new SolicitudInvalidaException("La solicitud ya existe con el nombre = " +solicitudNueva.getNombreComida());
+            }
+
+            //busca en los nombres de los alimentos ingresados por el usuario
+            if (alimentoIngresadoPorUsuarioService.existsByNombre(solicitudNueva.getNombreComida())){
+                throw new SolicitudInvalidaException("El alimento ya existe con el nombre = " +solicitudNueva.getNombreComida());
+            }
+        }
+        System.out.println("Despues de la comprobacion");
+
+
+        //obtenemos la solicitud a la que se quiere modificar
+        Optional<SolicitudAltaAlimento> solicitudAltaAlimentoOptional = solicitudRespository.findByNombreComidaIgnoreCase(nombreComidaSolicitudMoficiar);
+
+        //comprobamos si existe
+        if (solicitudAltaAlimentoOptional.isEmpty()){
+            throw new SolicitudInvalidaException("La solicitud no existe con el nombre de comida: " + nombreComidaSolicitudMoficiar);
+        }
+
+        //seteamos los campos con la nueva solicitud
+        solicitudAltaAlimentoOptional.get().setearDatosDesdeNuevaSolicitud(solicitudNueva);
+
+        //se inserta el alimento en la bdd
+        alimentoIngresadoPorUsuarioService.insertarBasandoseEnSolicitud(solicitudAltaAlimentoOptional.get());
+
+        //se elimina de la tabla solicitudes
+        solicitudRespository.deleteById(solicitudAltaAlimentoOptional.get().getId());
+
+        //se notifica al usuario que se acepto la solicitud de forma asyncronica con disparador de eventos
+        // y listeners de esos eventos asi no afecta al @Transactional que tiene este metodo
+        eventPublisher.publishEvent(new MailEvent(
+                obtenerMail(solicitudAltaAlimentoOptional.get().getUsername()),
+                "Aceptacion de solicitud",
+                "Su solicitud de alta de comida con el nombre '" + solicitudAltaAlimentoOptional.get().getNombreComida() + "' fue aceptada")
+
+        );
+
+        return "Solicitud aceptada con exito y alimento ingresado correctamente";
     }
 
     @Transactional
