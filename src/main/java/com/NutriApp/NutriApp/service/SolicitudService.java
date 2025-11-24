@@ -354,10 +354,12 @@ public class SolicitudService {
         //eliminamos la solicitud
         solicitudRespository.deleteById(solicitud.get().getId());
 
-        //se notifica al usuario que se acepto la solicitud
-        mailService.enviarMail(obtenerMail(solicitud.get().getUsername()),
+        //se notifica al usuario que se rechazo la solicitud
+        eventPublisher.publishEvent(new MailEvent(
+                obtenerMail(solicitud.get().getUsername()),
                 "Rechazo de solicitud",
-                "Su solicitud de alta de comida con el nombre '" + solicitud.get().getNombreComida() + "' fue rechazada");
+                "Su solicitud de alta de comida con el nombre '" + solicitud.get().getNombreComida() + "' fue rechazada")
+                );
 
         return "Solicitud rechazada con exito";
     }
