@@ -9,6 +9,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -91,7 +92,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
 
         }catch (ExpiredJwtException ex){
-            request.setAttribute("expired", ex.getMessage());
+//            request.setAttribute("expired", ex.getMessage());
+
+            //lanzamos la exception para que corte el flujo ya que sino (como estaba antes), el flujo seguia y lleguaba al
+            //controller donde accedia a los metodos, y si se intentaba acceder al usuario del contexto
+            //de spring tiraba un error que no se manejaba porque no habia ningun usuario en el contexto de spring.
+            //Ahora esta exception se catpura en exceptionHandling, en autenticationEntryPoint (es donde se
+            //capturan todas las exception de autenticacion) en el filterChain de securityConfig y se corta la ejecucion
+            //entonce no llega a los metodos de los controllers
+            throw new BadCredentialsException("Token expirado: ", ex);
         }
 
         // Continuamos la cadena de filtros

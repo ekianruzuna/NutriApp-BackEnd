@@ -7,10 +7,11 @@ import com.NutriApp.NutriApp.modelo.SolicitudAltaAlimento;
 import com.NutriApp.NutriApp.modelo.Usuario;
 import com.NutriApp.NutriApp.modelo.dto.AlimentoBusquedaDTO;
 import com.NutriApp.NutriApp.repository.SolicitudRespository;
-import com.NutriApp.NutriApp.repository.UsuarioRepository;
+import com.NutriApp.NutriApp.service.Mail.MailService;
+import com.NutriApp.NutriApp.service.Mail.ManjearMailAsync.MailEvent;
 import jakarta.transaction.Transactional;
-import org.aspectj.weaver.patterns.PerObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -41,6 +42,9 @@ public class SolicitudService {
 
     @Autowired
     private PersonaService personaService;
+
+    @Autowired
+    private ApplicationEventPublisher eventPublisher;
 
 
     @Transactional
@@ -73,9 +77,9 @@ public class SolicitudService {
 
         solicitudRespository.save(solicitud);
 
-        mailService.enviarMail("ekianuruzuna@gmail.com", "Solicitud de Alta de Comida", "Se solicito la alta de esta comida = " +solicitud);
-        mailService.enviarMail("zuriuruzuna6@gmail.com", "Solicitud de Alta de Comida", "Se solicito la alta de esta comida = " +solicitud);
-        mailService.enviarMail("juanignaciovalletorres241104@gmail.com", "Solicitud de Alta de Comida", "Se solicito la alta de esta comida = " +solicitud);
+        eventPublisher.publishEvent(new MailEvent("ekianuruzuna@gmail.com", "Solicitud de Alta de Comida", "Se solicito la alta de esta comida = " +solicitud));
+        eventPublisher.publishEvent(new MailEvent("zuriuruzuna6@gmail.com", "Solicitud de Alta de Comida", "Se solicito la alta de esta comida = " +solicitud));
+        eventPublisher.publishEvent(new MailEvent("juanignaciovalletorres241104@gmail.com", "Solicitud de Alta de Comida", "Se solicito la alta de esta comida = " +solicitud));
     }
 
     //verifica que no se ecuentre en la api
@@ -216,13 +220,19 @@ public class SolicitudService {
     //se fija en la solicitud que se quiere modificar y solo le setea los campos nuevos que vienen como entrada (no hace falta mandar todos los campos en la entrada)
     @Transactional
     public SolicitudAltaAlimento modificarMiSolicitud (String nombreComidaSolicitudModificar, SolicitudAltaAlimento solicitudNueva) throws SolicitudInvalidaException{
-        //validaciones
-        if (alimentoIngresadoPorUsuarioService.existsByNombre(solicitudNueva.getNombreComida())){
-            throw new SolicitudInvalidaException("El alimento ya existe con el nombre = " +solicitudNueva.getNombreComida());
-        }
 
-        if (solicitudRespository.existsByNombreComidaIgnoreCase(solicitudNueva.getNombreComida())){
-            throw new SolicitudInvalidaException("La solicitud ya existe con el nombre = " +solicitudNueva.getNombreComida());
+
+        //si el nombre del objeto nuevo no cambio con respecto a no modificado
+        if (!nombreComidaSolicitudModificar.equals(solicitudNueva.getNombreComida())){
+            //busca en las solicitudes para que no se pisen los nombres con otras solicitudes
+            if (solicitudRespository.existsByNombreComidaIgnoreCase(solicitudNueva.getNombreComida())){
+                throw new SolicitudInvalidaException("La solicitud ya existe con el nombre = " +solicitudNueva.getNombreComida());
+            }
+
+            //busca en los nombres de los alimentos ingresados por el usuario
+            if (alimentoIngresadoPorUsuarioService.existsByNombre(solicitudNueva.getNombreComida())){
+                throw new SolicitudInvalidaException("El alimento ya existe con el nombre = " +solicitudNueva.getNombreComida());
+            }
         }
 
 
@@ -247,6 +257,62 @@ public class SolicitudService {
         return solicitudVieja.get();
     }
 
+
+    //ADMINS
+
+    @Transactional
+    public String modificar_Y_AceptarSolicitud (String nombreComidaSolicitudMoficiar, SolicitudAltaAlimento solicitudNueva){
+        System.out.println("Antes de la comprobacion");
+
+
+
+        System.out.println("Nombre de la solicitud vieja" + nombreComidaSolicitudMoficiar);
+        System.out.println("Nombre de la solicitud nueva" + solicitudNueva.getNombreComida());
+
+        //si el nombre del objeto nuevo no cambio con respecto a no modificado
+        if (!nombreComidaSolicitudMoficiar.equals(solicitudNueva.getNombreComida())){
+            //busca en las solicitudes para que no se pisen los nombres con otras solicitudes
+            if (solicitudRespository.existsByNombreComidaIgnoreCase(solicitudNueva.getNombreComida())){
+                throw new SolicitudInvalidaException("La solicitud ya existe con el nombre = " +solicitudNueva.getNombreComida());
+            }
+
+            //busca en los nombres de los alimentos ingresados por el usuario
+            if (alimentoIngresadoPorUsuarioService.existsByNombre(solicitudNueva.getNombreComida())){
+                throw new SolicitudInvalidaException("El alimento ya existe con el nombre = " +solicitudNueva.getNombreComida());
+            }
+        }
+        System.out.println("Despues de la comprobacion");
+
+
+        //obtenemos la solicitud a la que se quiere modificar
+        Optional<SolicitudAltaAlimento> solicitudAltaAlimentoOptional = solicitudRespository.findByNombreComidaIgnoreCase(nombreComidaSolicitudMoficiar);
+
+        //comprobamos si existe
+        if (solicitudAltaAlimentoOptional.isEmpty()){
+            throw new SolicitudInvalidaException("La solicitud no existe con el nombre de comida: " + nombreComidaSolicitudMoficiar);
+        }
+
+        //seteamos los campos con la nueva solicitud
+        solicitudAltaAlimentoOptional.get().setearDatosDesdeNuevaSolicitud(solicitudNueva);
+
+        //se inserta el alimento en la bdd
+        alimentoIngresadoPorUsuarioService.insertarBasandoseEnSolicitud(solicitudAltaAlimentoOptional.get());
+
+        //se elimina de la tabla solicitudes
+        solicitudRespository.deleteById(solicitudAltaAlimentoOptional.get().getId());
+
+        //se notifica al usuario que se acepto la solicitud de forma asyncronica con disparador de eventos
+        // y listeners de esos eventos asi no afecta al @Transactional que tiene este metodo
+        eventPublisher.publishEvent(new MailEvent(
+                obtenerMail(solicitudAltaAlimentoOptional.get().getUsername()),
+                "Aceptacion de solicitud",
+                "Su solicitud de alta de comida con el nombre '" + solicitudAltaAlimentoOptional.get().getNombreComida() + "' fue aceptada")
+
+        );
+
+        return "Solicitud aceptada con exito y alimento ingresado correctamente";
+    }
+
     @Transactional
     public String aceptarSolicitud (long idSolicitud) throws SolicitudInvalidaException{
         //bucamos la solicitud
@@ -263,10 +329,14 @@ public class SolicitudService {
         //se borra de la tabla la solicitud
         solicitudRespository.deleteById(solicitud.get().getId());
 
-        //se notifica al usuario que se acepto la solicitud
-        mailService.enviarMail(obtenerMail(solicitud.get().getUsername()),
+        //se notifica al usuario que se acepto la solicitud de forma asyncronica con disparador de eventos
+        // y listeners de esos eventos asi no afecta al @Transactional que tiene este metodo
+        eventPublisher.publishEvent(new MailEvent(
+                obtenerMail(solicitud.get().getUsername()),
                 "Aceptacion de solicitud",
-                "Su solicitud de alta de comida con el nombre '" + solicitud.get().getNombreComida() + "' fue aceptada");
+                "Su solicitud de alta de comida con el nombre '" + solicitud.get().getNombreComida() + "' fue aceptada")
+
+        );
 
         return "Solicitud aceptada con exito y alimento ingresado correctamente";
     }
@@ -284,10 +354,12 @@ public class SolicitudService {
         //eliminamos la solicitud
         solicitudRespository.deleteById(solicitud.get().getId());
 
-        //se notifica al usuario que se acepto la solicitud
-        mailService.enviarMail(obtenerMail(solicitud.get().getUsername()),
+        //se notifica al usuario que se rechazo la solicitud
+        eventPublisher.publishEvent(new MailEvent(
+                obtenerMail(solicitud.get().getUsername()),
                 "Rechazo de solicitud",
-                "Su solicitud de alta de comida con el nombre '" + solicitud.get().getNombreComida() + "' fue rechazada");
+                "Su solicitud de alta de comida con el nombre '" + solicitud.get().getNombreComida() + "' fue rechazada")
+                );
 
         return "Solicitud rechazada con exito";
     }

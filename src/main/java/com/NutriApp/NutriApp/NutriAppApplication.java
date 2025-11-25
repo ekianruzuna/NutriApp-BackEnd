@@ -1,16 +1,11 @@
 package com.NutriApp.NutriApp;
 
-import com.NutriApp.NutriApp.modelo.Persona;
-import com.NutriApp.NutriApp.modelo.enums.Genero;
-import com.NutriApp.NutriApp.service.MailService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.scheduling.annotation.EnableAsync;
 
-import java.time.LocalDate;
-
+//activamos Async para que pueda ejecutar acciones asyncronicamente (mandar mails con events and listeners)
+@EnableAsync
 @SpringBootApplication
 public class NutriAppApplication {
 

@@ -7,12 +7,17 @@ import com.NutriApp.NutriApp.modelo.dto.LoginResponse;
 import com.NutriApp.NutriApp.modelo.dto.RegistroUsuarioRequest;
 import com.NutriApp.NutriApp.exceptions.PersonaInvalidaException;
 import com.NutriApp.NutriApp.exceptions.UsuarioExistente;
+import com.NutriApp.NutriApp.modelo.Authority;
+import com.NutriApp.NutriApp.modelo.PerfilNutricional;
+import com.NutriApp.NutriApp.modelo.Persona;
+import com.NutriApp.NutriApp.modelo.Usuario;
 import com.NutriApp.NutriApp.modelo.enums.Role;
 import com.NutriApp.NutriApp.repository.AuthorityRepository;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.jackson2.JacksonFactory;
+import com.NutriApp.NutriApp.service.Mail.MailService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +28,10 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestBody;
+
+import java.util.AbstractMap;
+import java.util.Map;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;import java.time.LocalDate;
 import java.util.*;
@@ -46,6 +55,7 @@ public class AuthService {
     private PersonaService personaService;
     @Autowired
     private PasswordEncoder passwordEncoder;
+
     @Autowired
     private MailService mailService;
 

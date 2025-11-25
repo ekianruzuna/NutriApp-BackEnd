@@ -94,6 +94,12 @@ public class SolicitudController {
     }
 
     //solo admins
+    @Operation(summary = "Modificar una solicitud y aceptarla", description = "Modifica la solicitud e ingresa el alimento en la bdd")
+    @PutMapping("/modificarAndAceptar")
+    public ResponseEntity<String> modificar_Y_Aceptar (@RequestParam String nombreComidaSolicitudModificar, @RequestBody @Validated(ValidacionBasica.class) SolicitudAltaAlimento solicitudAltaAlimentoNueva){
+        return ResponseEntity.ok(solicitudService.modificar_Y_AceptarSolicitud(nombreComidaSolicitudModificar, solicitudAltaAlimentoNueva));
+    }
+
     @Operation(summary = "Aceptar una solicitud de alta de comida.", description = "Acepta solicitud de alta de comida.")
     @PostMapping ("/aceptar")
     public ResponseEntity<String> aceptarSolicitud (@RequestParam long idSolicitud){

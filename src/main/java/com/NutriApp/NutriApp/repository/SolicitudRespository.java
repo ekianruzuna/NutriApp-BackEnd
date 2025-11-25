@@ -13,6 +13,7 @@ import java.util.Optional;
 public interface SolicitudRespository extends JpaRepository<SolicitudAltaAlimento, Integer> {
 
     Optional<SolicitudAltaAlimento> findById (long id);
+    Optional<SolicitudAltaAlimento> findByNombreComidaIgnoreCase(String nombreComidaSolictudBuscar);
     boolean existsByNombreComidaIgnoreCase(String nombreComida);
     List<SolicitudAltaAlimento> findAllByUsuarioUsername (String username);
     List<SolicitudAltaAlimento> findAllByNombreComidaIgnoreCase(String nombreComida);
