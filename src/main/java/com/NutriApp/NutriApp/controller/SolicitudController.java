@@ -33,15 +33,13 @@ public class SolicitudController {
     //cualquiera registrado
     @Operation(summary = "Realizar solicitud de alta de comida.", description = "Inserta una solicitud de alta de comida en la BBD.")
     @PostMapping("/insertar")
-    public ResponseEntity<String> insertar (@RequestBody @Validated(ValidacionCompleta.class) SolicitudAltaAlimento solicitudAltaAlimento) throws Exception {
+    public ResponseEntity<SolicitudAltaAlimento> insertar (@RequestBody @Validated(ValidacionCompleta.class) SolicitudAltaAlimento solicitudAltaAlimento) throws Exception {
 
         if (solicitudAltaAlimento.getPorcion() == 0.0){
             throw new IllegalArgumentException("El campo 'porcion' es obligatorio y no puede ser 0.0");
         }
 
-        solicitudService.insertar(solicitudAltaAlimento);
-
-        return ResponseEntity.ok("Solicitud enviada con exito");
+        return ResponseEntity.ok(solicitudService.insertar(solicitudAltaAlimento));
     }
 
     //solo admins

@@ -48,7 +48,7 @@ public class SolicitudService {
 
 
     @Transactional
-    public void insertar (SolicitudAltaAlimento solicitud) throws Exception{
+    public SolicitudAltaAlimento insertar (SolicitudAltaAlimento solicitud) throws Exception{
         if (alimentoIngresadoPorUsuarioService.existsByNombre(solicitud.getNombreComida())){
             throw new SolicitudInvalidaException("El alimento ya existe con el nombre = " +solicitud.getNombreComida());
         }
@@ -80,6 +80,8 @@ public class SolicitudService {
         eventPublisher.publishEvent(new MailEvent("ekianuruzuna@gmail.com", "Solicitud de Alta de Comida", "Se solicito la alta de esta comida = " +solicitud));
         eventPublisher.publishEvent(new MailEvent("zuriuruzuna6@gmail.com", "Solicitud de Alta de Comida", "Se solicito la alta de esta comida = " +solicitud));
         eventPublisher.publishEvent(new MailEvent("juanignaciovalletorres241104@gmail.com", "Solicitud de Alta de Comida", "Se solicito la alta de esta comida = " +solicitud));
+
+        return solicitud;
     }
 
     //verifica que no se ecuentre en la api

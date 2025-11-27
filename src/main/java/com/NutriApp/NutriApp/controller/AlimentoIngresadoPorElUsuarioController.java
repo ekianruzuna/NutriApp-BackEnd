@@ -32,7 +32,7 @@ public class AlimentoIngresadoPorElUsuarioController {
     //solo admins
     @Operation(summary = "Buscar alimentos en nuestra bdd.", description = "Devuleve una lista con los alimentos que matchean con el nombre de nuestra BDD.")
     @GetMapping("/filtrar")
-    public ResponseEntity<List<AlimentoIngresadoPorUsuario>> filtrarPorUsername (@RequestParam String nombreComida){
+    public ResponseEntity<List<AlimentoIngresadoPorUsuario>> filtrarPorNombreComida (@RequestParam String nombreComida){
         return ResponseEntity.ok(alimentoIngresadoPorUsuarioService.filtrarAlimentosPorNombreComida(nombreComida));
     }
 
