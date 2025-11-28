@@ -32,8 +32,10 @@ public interface AlimentoIngresadoPorUsuarioRepository extends JpaRepository<Ali
     Optional<MacronutrienteDTO> findMacronutrientesByNombreComidaAndId(@Param("nombreComida") String nombreComida, @Param("id") Long id);
     boolean existsByNombreComidaIgnoreCase(String nombreComida);
     boolean existsById (long id);
+    Optional<AlimentoIngresadoPorUsuario> findById (long id);
     Optional<List<AlimentoIngresadoPorUsuario>> findAllByNombreComidaContainingIgnoreCase (String nombreComida);
     Optional<AlimentoIngresadoPorUsuario> findByNombreComidaContainingIgnoreCase (String nombreComida);
     Optional<AlimentoIngresadoPorUsuario> findByNombreComidaIgnoreCase (String nombreComida);
 //    void deleteBy
+    Optional<List<AlimentoIngresadoPorUsuario>> findTop10ByOrderByIdDesc ();
 }

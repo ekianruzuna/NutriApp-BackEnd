@@ -14,6 +14,7 @@ import org.apache.catalina.LifecycleState;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.reactive.TransactionalOperator;
 
 import java.util.List;
 import java.util.Optional;
@@ -25,6 +26,7 @@ public class AlimentoIngresadoPorUsuarioService {
     private AlimentoIngresadoPorUsuarioRepository alimentoRepository;
     @Autowired
     private SolicitudRespository solicitudRespository;
+    private TransactionalOperator transactionalOperator;
 
     public boolean existsByNombre (String nombre){
         return alimentoRepository.existsByNombreComidaIgnoreCase(nombre);
@@ -32,6 +34,59 @@ public class AlimentoIngresadoPorUsuarioService {
 
     public boolean existsById (long id){
         return alimentoRepository.existsById(id);
+    }
+
+    @Transactional
+    public AlimentoIngresadoPorUsuario insertar (AlimentoIngresadoPorUsuario alimentoIngresadoPorUsuario) throws AlimetoIngreadoPorElUsuarioException{
+        //validacion
+        if (alimentoRepository.existsByNombreComida(alimentoIngresadoPorUsuario.getNombreComida())){
+            throw new AlimetoIngreadoPorElUsuarioException("El alimento ya existe con el nombre: " + alimentoIngresadoPorUsuario.getNombreComida());
+        }
+
+        //guardamos
+        alimentoRepository.save(alimentoIngresadoPorUsuario);
+
+        return alimentoIngresadoPorUsuario;
+    }
+
+    @Transactional
+    public AlimentoIngresadoPorUsuario editar (long idAlimentoEditar, AlimentoIngresadoPorUsuario alimentoNuevo) throws AlimetoIngreadoPorElUsuarioException{
+        Optional<AlimentoIngresadoPorUsuario> alimento = alimentoRepository.findById(idAlimentoEditar);
+
+        if (alimento.isEmpty()){
+            throw new AlimetoIngreadoPorElUsuarioException("El alimento con el id: '" + idAlimentoEditar + "' no existe");
+        }
+
+        //si cambio el nombre y ya existe ese nombre
+        if (!alimento.get().getNombreComida().equals(alimentoNuevo.getNombreComida())){
+            if (alimentoRepository.existsByNombreComida(alimentoNuevo.getNombreComida())){
+                throw new AlimetoIngreadoPorElUsuarioException("El alimento ya existe con el nombre: " + alimentoNuevo.getNombreComida());
+            }
+        }
+
+        //actualizamos los datos
+        alimento.get().setNombreComida(alimentoNuevo.getNombreComida());
+        alimento.get().setGramosPorPorcion(alimentoNuevo.getGramosPorPorcion());
+        alimento.get().setCalorias(alimentoNuevo.getCalorias());
+        alimento.get().setProteinas(alimentoNuevo.getProteinas());
+        alimento.get().setCarbohidratos(alimentoNuevo.getCarbohidratos());
+        alimento.get().setGrasas(alimentoNuevo.getGrasas());
+
+        //guardamos
+        alimentoRepository.save(alimento.get());
+
+        return alimento.get();
+    }
+
+    @Transactional
+    public String eliminar (long idAlimentoEliminar) throws AlimetoIngreadoPorElUsuarioException{
+        if (!alimentoRepository.existsById(idAlimentoEliminar)){
+            throw new AlimetoIngreadoPorElUsuarioException("El alimento con el id: '" + idAlimentoEliminar+ "' no existe");
+        }
+
+        alimentoRepository.deleteById(idAlimentoEliminar);
+
+        return "Alimento eliminado correctamente";
     }
 
     @Transactional
@@ -71,6 +126,19 @@ public class AlimentoIngresadoPorUsuarioService {
         }
 
         return lista;
+    }
+
+    //lista los ultimos 10 aliemntos de nuestra base de datos
+    @PreAuthorize("hasRole('ADMIN')")   //validacion extra por si las dudas
+    public List<AlimentoIngresadoPorUsuario> listarUtimos10 () throws AlimetoIngreadoPorElUsuarioException{
+        //obtenemos todos los alimentos
+        Optional<List<AlimentoIngresadoPorUsuario>> lista = alimentoRepository.findTop10ByOrderByIdDesc();
+
+        if (lista.isEmpty()){
+            throw new AlimetoIngreadoPorElUsuarioException("No hay ningun alimento cargado en la bdd");
+        }
+
+        return lista.get();
     }
 
     //filtra los alimentos de nuestra bdd buscando por matcheos
