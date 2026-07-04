@@ -17,4 +17,5 @@ public class DiaDTO {
 
     private List<ComidaIngeridaSalidaDTO> comidasIngeridas;
     private List<ActividadFisicaSalidaDTO> actividadesFisicasRealizadas;
+    private HidratacionSalidaDTO hidratacion;
 }
