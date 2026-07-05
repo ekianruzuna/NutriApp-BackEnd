@@ -14,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -116,6 +117,27 @@ public class DiaService {
         diaActual.setCaloriasRestantes(objetivoDiario - caloriasConsumidas);
 
         guardar(diaActual);
+    }
+
+    public double verCaloriasConsumidasDeunDia(@RequestParam LocalDate fecha) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Usuario user = (Usuario) auth.getPrincipal();
+
+        // Buscar el día correspondiente
+        Optional<Dia> diaEncontrado = obtenerDiaPorFecha(fecha, user);
+        if (diaEncontrado.isEmpty()) {
+            throw new DiaInvalidoException("No se encontro el dia registrado con fecha: " + fecha);
+        }
+
+        // Extraer la lista de comidas ingeridas
+        List<ComidaIngerida> comidas = diaEncontrado.get().getComidasIngeridas();
+
+        // Sumar las calorías de las comidas ingeridas
+        double totalCalorias = comidas.stream()
+                .mapToDouble(ComidaIngerida::getCalorias)
+                .sum();
+
+        return totalCalorias;
     }
 
 }

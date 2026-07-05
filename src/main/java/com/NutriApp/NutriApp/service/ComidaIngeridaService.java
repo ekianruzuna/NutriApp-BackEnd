@@ -8,6 +8,7 @@ import com.NutriApp.NutriApp.modelo.dto.ModificarComidaIngeridaDTO;
 import com.NutriApp.NutriApp.exceptions.ComidaIngeridaException;
 import com.NutriApp.NutriApp.exceptions.DiaInvalidoException;
 import com.NutriApp.NutriApp.modelo.enums.TipoComida;
+import com.NutriApp.NutriApp.modelo.enums.TipoLogro;
 import com.NutriApp.NutriApp.repository.ComidaIngeridaRepository;
 import com.fasterxml.jackson.databind.JsonNode;
 import jakarta.transaction.Transactional;
@@ -31,6 +32,7 @@ public class ComidaIngeridaService {
     private final NutricionService nutricionService;
     private final DiaService diaService;
     private final AlimentoIngresadoPorUsuarioService alimentoIngresadoPorUsuarioService;
+    private final LogroService logroService;
 
     @Transactional
     public void agregarComidaIngerida(long id_comida, String nombre, double gramos, TipoComida tipo, LocalDate fecha) throws Exception {
@@ -63,6 +65,9 @@ public class ComidaIngeridaService {
         }
 
         diaService.caloriasRestantesDia(fecha);
+
+        //comprobamos si cumplio con un logro
+        logroService.comprobarYGuerdarLogro(fecha, TipoLogro.META_CALORICA_DIARIA);
     }
 
     public ComidaIngerida convertir_comidaid(ComidaIngerida comidaIngerida, String nombre, long comida_id, double gramos) throws Exception {
@@ -124,6 +129,12 @@ public class ComidaIngeridaService {
             guardar(modificar);
         }
         diaService.caloriasRestantesDia(dia.get().getFecha());
+
+        //comprobamos si cumplio con un logro
+        logroService.comprobarYGuerdarLogro(dto.getFecha(), TipoLogro.META_CALORICA_DIARIA);
+        //y comprobamos si perdio algun logro
+        logroService.comprobarYEliminarLogro(dto.getFecha(), TipoLogro.META_CALORICA_DIARIA);
+
     }
 
     // metodo que settea ciertos valores de la comida para modularizar codigo
@@ -152,7 +163,7 @@ public class ComidaIngeridaService {
 
         // Sumar las calorías de las comidas ingeridas
         double totalCalorias = comidas.stream()
-                .mapToDouble(ComidaIngerida::getCantidad)
+                .mapToDouble(ComidaIngerida::getCalorias)
                 .sum();
 
         return totalCalorias;
@@ -186,6 +197,9 @@ public class ComidaIngeridaService {
 
         comidaIngeridaRepository.delete(comida);  // esto lo elimina de la DB
         diaService.caloriasRestantesDia(fecha);   // recalculás con la lista actualizada
+
+        //comprobamos si perdio algun logro
+        logroService.comprobarYEliminarLogro(fecha, TipoLogro.META_CALORICA_DIARIA);
     }
 
 }
