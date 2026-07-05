@@ -1,5 +1,6 @@
 package com.NutriApp.NutriApp.service;
 
+import com.NutriApp.NutriApp.exceptions.LogroInvalidoException;
 import com.NutriApp.NutriApp.modelo.Logros.HistorialLogro;
 import com.NutriApp.NutriApp.modelo.Logros.Logro;
 import com.NutriApp.NutriApp.modelo.Logros.LogroEvaluator;
@@ -119,13 +120,29 @@ public class LogroService {
     }
 
     //busca y retorna la cantidad de veces que gano un tipo de logro
-    public int obtenerCantidadVecesLogroObtenido(TipoLogro tipoLogro){
-        return 1;
+    public long obtenerCantidadVecesLogroObtenido(TipoLogro tipoLogro){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Usuario user = (Usuario) auth.getPrincipal();
+
+        //retonamo la cantidad de logros que obtuvo un usuario en base a un tipo de logro que se pasa por parametro
+        return historialLogroRepository.countAllByUsuario_UsernameAndLogroObtenido_TipoLogro(user.getUsername(), tipoLogro);
     }
 
     //obtener el historial completo de logros para mostrarlo en el front
-    public HistorialLogro obtenerHistorialLogros(){
-        return new HistorialLogro();
+    public List<HistorialLogro> obtenerHistorialLogros(){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Usuario user = (Usuario) auth.getPrincipal();
+
+        //obtenemos el historial
+        List<HistorialLogro> historialLogros = historialLogroRepository.findAllByUsuarioUsername(user.getUsername());
+
+        //si la lista esta vacia tiramos exception
+        if (historialLogros.isEmpty()){
+            throw new LogroInvalidoException("El usuario '" + user.getUsername() + "' no tiene ningun logro");
+        }
+
+        //retornamos la lista
+        return historialLogros;
     }
 
     //metodo que busca cual es la condicion para evaluar si se cumple el logro o no
@@ -139,7 +156,6 @@ public class LogroService {
 
 
 
-    //se podria implementar el tema de una interfaz evaluator para que evalue todas las clases que la implementen y asi tener un solo metodo que compruebe y
-    // guarde y que compruebe y elimine el logro. Despues me gustaria agregar un atributo de fecha del logro, asi queda separada la fecha que se obtuvo el
+    // Despues me gustaria agregar un atributo de fecha del logro, asi queda separada la fecha que se obtuvo el
     // logro y la fecha a la que pertenece el logro
 }
