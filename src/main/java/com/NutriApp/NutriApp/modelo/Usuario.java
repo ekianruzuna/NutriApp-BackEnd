@@ -1,5 +1,7 @@
 package com.NutriApp.NutriApp.modelo;
 
+import com.NutriApp.NutriApp.modelo.Logros.HistorialLogro;
+import com.NutriApp.NutriApp.modelo.Logros.Logro;
 import com.NutriApp.NutriApp.modelo.dto.PersonaDTO;
 import com.NutriApp.NutriApp.modelo.enums.Role;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -93,6 +95,15 @@ public class Usuario implements UserDetails {
 
     private LocalDate fechaActiva = LocalDate.now();
 
+    //uno de esta clase apuntam a muchos de esa clase
+    @OneToMany (
+            mappedBy = "usuario",   //indica que la relación la administra el atributo "usuario" de la entidad Logro (lado propietario), evitando que Hibernate cree una tabla intermedia para esta relación.
+            cascade = CascadeType.ALL,  //todo lo que hacemos con el usuario lo hacemos con el logro
+            orphanRemoval = true)   //es necesario para que cuando eliminamos un logro se vea reflejado el cambio en la BDD, sino solo eliminaria de la coleccion de java
+    @JsonIgnore
+    private List<HistorialLogro> logros = new ArrayList<>();
+
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority(role.getAuthority().toString()));
@@ -122,5 +133,9 @@ public class Usuario implements UserDetails {
     @JsonProperty ("nombre")
     public String getNombrePersona (){
         return persona.getNombre();
+    }
+
+    public void insetarLogro (Logro logro){
+
     }
 }
