@@ -1,6 +1,7 @@
 package com.NutriApp.NutriApp.modelo.Logros;
 
 import com.NutriApp.NutriApp.modelo.Usuario;
+import com.NutriApp.NutriApp.modelo.enums.TipoLogro;
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
@@ -36,9 +37,15 @@ public class HistorialLogro {
 
     private LocalDate fechaObtencion;
 
-    //le ponemos esto para que en el json solo agarre el username del usuario y no muestre todo lo demas que tiene
+    //le ponemos esto para que en el json solo agarre el username del usuario y no agarre todo lo demas que tiene
     @JsonProperty("username")
     public String getUsuario() {
         return usuario.getUsername();
+    }
+
+    //le ponemos esto para que en el json solo agarre el tipo del logro y no agarre todo lo demas que tiene
+    @JsonProperty("logro_id")
+    public TipoLogro getLogroObtenido() {
+        return logroObtenido.getTipoLogro();
     }
 }
