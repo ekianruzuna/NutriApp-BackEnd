@@ -120,7 +120,7 @@ public class GeminiService {
                     .parts(List.of(Part.builder().text(promptCorregido).build()))
                     .build());
 
-            GenerateContentResponse response = client.models.generateContent("gemini-2.5-flash", chatHistory, config);
+            GenerateContentResponse response = client.models.generateContent("gemini-3.6-flash", chatHistory, config);
             Content modelResponseContent = response.candidates().get().get(0).content().get();
             chatHistory.add(modelResponseContent);
 
@@ -147,7 +147,7 @@ public class GeminiService {
                         .parts(List.of(Part.builder().text("Resultado de '" + call.name().orElse("") + "': " + resultadoFuncion).build()))
                         .build());
 
-                GenerateContentResponse responseFinal = client.models.generateContent("gemini-2.5-flash", chatHistory, config);
+                GenerateContentResponse responseFinal = client.models.generateContent("gemini-3.6-flash", chatHistory, config);
                 Content finalContent = responseFinal.candidates().get().get(0).content().get();
                 chatHistory.add(finalContent);
 
