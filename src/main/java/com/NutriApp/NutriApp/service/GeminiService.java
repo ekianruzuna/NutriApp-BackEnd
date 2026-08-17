@@ -106,15 +106,17 @@ public class GeminiService {
                     .tools(List.of(functionsTool))
                     .build();
 
-            if (chatHistory.isEmpty()) {
-                String systemInstructions = String.format(
-                        "Eres NutriBot, el asistente personal de %s...\n\nFECHA ACTUAL: Hoy es %s.",
-                        perfil.getUsername(), LocalDate.now().toString()
-                );
-                chatHistory.add(Content.builder().role("user")
-                        .parts(List.of(Part.builder().text(systemInstructions).build()))
-                        .build());
-            }
+            String systemInstructions = String.format(
+                    "Eres NutriBot, el asistente personal de %s...\n\nFECHA ACTUAL: Hoy es %s.",
+                    perfil.getUsername(), LocalDate.now().toString()
+            );
+            List<Content> chatHistoryConSistema = new ArrayList<>();
+            chatHistoryConSistema.add(Content.builder().role("user")
+                    .parts(List.of(Part.builder().text(systemInstructions).build()))
+                    .build());
+            chatHistoryConSistema.addAll(chatHistory);
+            chatHistory.clear();
+            chatHistory.addAll(chatHistoryConSistema);
 
             chatHistory.add(Content.builder().role("user")
                     .parts(List.of(Part.builder().text(promptCorregido).build()))
@@ -151,7 +153,16 @@ public class GeminiService {
                 Content finalContent = responseFinal.candidates().get().get(0).content().get();
                 chatHistory.add(finalContent);
 
-                String textoFinal = finalContent.parts().get().get(0).text().orElse("");
+                String textoFinal;
+                Optional<Part> textPart = finalContent.parts().get().stream()
+                        .filter(p -> p.text().isPresent())
+                        .findFirst();
+
+                if (textPart.isPresent()) {
+                    textoFinal = textPart.get().text().get();
+                } else {
+                    textoFinal = "Necesito un poco más de información para completar esto. ¿Podrías darme más detalles?";
+                }
                 chatService.guardarInteraccion(usuario, promptCorregido, textoFinal);
                 return textoFinal;
             }
