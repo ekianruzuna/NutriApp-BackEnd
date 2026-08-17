@@ -7,8 +7,8 @@ import com.NutriApp.NutriApp.modelo.Usuario;
 import com.NutriApp.NutriApp.repository.ChatRepository;
 import com.NutriApp.NutriApp.repository.ComidaIngeridaRepository;
 import com.NutriApp.NutriApp.repository.PerfilNutricionalRepository;
-import com.google.cloud.vertexai.api.Content;
-import com.google.cloud.vertexai.api.Part;
+import com.google.genai.types.Content;
+import com.google.genai.types.Part;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -35,9 +35,9 @@ public class ChatService {
         List<ChatMessage> mensajes = chatRepository.findTop20ByUsuarioUsernameOrderByTimestampAsc(usuario);
 
         return mensajes.stream()
-                .map(msg -> Content.newBuilder()
-                        .setRole(msg.getRol().toLowerCase())
-                        .addParts(Part.newBuilder().setText(msg.getContenido()).build())
+                .map(msg -> Content.builder()
+                        .role(msg.getRol().toLowerCase())
+                        .parts(List.of(Part.builder().text(msg.getContenido()).build()))
                         .build())
                 .collect(Collectors.toList());
     }
