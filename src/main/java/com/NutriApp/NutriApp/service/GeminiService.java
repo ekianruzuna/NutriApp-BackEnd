@@ -81,7 +81,7 @@ public class GeminiService {
 
             FunctionDeclaration resumenSemanalFunc = FunctionDeclaration.builder()
                     .name("generarResumenSemanal")
-                    .description("Genera un análisis estadístico de los alimentos ingeridos en los últimos 7 días.")
+                    .description("Devuelve la lista de comidas registradas en los últimos 7 días (nombre, gramos, tipo de comida). Usa esta lista para armar vos mismo un resumen o análisis en tu respuesta al usuario.")
                     .build();
 
             FunctionDeclaration generarPlanDiarioFunc = FunctionDeclaration.builder()
@@ -120,10 +120,13 @@ public class GeminiService {
 
                             "REGLAS DE ORO PARA EL ÉXITO:\n" +
                             "- Un saludo simple como 'hola' se responde con un saludo simple y una pregunta abierta de qué necesita, NUNCA ofreciendo generar un plan diario sin que te lo pidan.\n" +
+                            "- TIPO DE COMIDA EXPLÍCITO: Si el usuario menciona explícitamente el momento del día (desayuno, almuerzo, merienda, cena, snack) en su mensaje, usá SIEMPRE ese valor literal para registrar la comida, sin importar la hora actual del sistema o el reloj.\n" +
+                            "- NO RETOMES TEMAS VIEJOS SIN QUE TE LO PIDAN: Nunca vuelvas a mencionar o preguntar sobre un tema de una conversación anterior (como un plan diario sugerido antes) a menos que el usuario lo traiga a colación explícitamente en su mensaje actual.\n" +
                             "- PRIORIZA LA CONVERSACIÓN: NutriBot jamás debe decir 'no tengo capacidad para eso'. Si no sabes algo, ofrécele una perspectiva basada en la evidencia nutricional actual.\n" +
-                            "- MANEJO DE DATOS: Cuando el usuario inicie un registro, sé preciso. Si falta información (como gramos), haz una sugerencia educada pero mantén el flujo de la charla.\n" +
+                            "- MANEJO DE DATOS: Cuandog el usuario inicie un reistro, sé preciso. Si falta información (como gramos), haz una sugerencia educada pero mantén el flujo de la charla.\n" +
                             "- CONTEXTO: Recuerda que %s tiene como objetivo '%s'. Cada consejo debe alinearse a esa meta.\n\n" +
-                            "FECHA ACTUAL: Hoy es %s. Utiliza esta fecha para organizar planes semanales si el usuario lo solicita.",
+                            "FECHA ACTUAL: Hoy es %s. Utiliza esta fecha para organizar planes semanales si el usuario lo solicita. \n" +
+                    "- RESOLUCIÓN DE AMBIGÜEDAD: Si el usuario responde algo corto o ambiguo (como 'opción 1', 'sí', 'la primera'), SIEMPRE interpretalo como respuesta a la ÚLTIMA pregunta que vos mismo hiciste en tu mensaje anterior, ignorando preguntas más viejas que puedan estar en el historial.\n\n",
                     perfil.getUsername(),
                     perfil.getUsername(),
                     perfil.getObjetivoDiario(),
@@ -144,15 +147,23 @@ public class GeminiService {
                     .parts(List.of(Part.builder().text(promptCorregido).build()))
                     .build());
 
-            GenerateContentResponse response = client.models.generateContent("gemini-3.5-flash", chatHistory, config);
-            Content modelResponseContent = response.candidates().get().get(0).content().get();
-            chatHistory.add(modelResponseContent);
+            final int MAX_FUNCTION_CALL_ITERATIONS = 5;
+            Content modelResponseContent = null;
 
-            Optional<Part> functionCallPart = modelResponseContent.parts().get().stream()
-                    .filter(p -> p.functionCall().isPresent())
-                    .findFirst();
+            for (int iteracion = 0; iteracion < MAX_FUNCTION_CALL_ITERATIONS; iteracion++) {
+                GenerateContentResponse response = client.models.generateContent("gemini-3.5-flash-lite", chatHistory, config);
+                modelResponseContent = response.candidates().get().get(0).content().get();
+                chatHistory.add(modelResponseContent);
 
-            if (functionCallPart.isPresent()) {
+                Optional<Part> functionCallPart = modelResponseContent.parts().get().stream()
+                        .filter(p -> p.functionCall().isPresent())
+                        .findFirst();
+
+                if (functionCallPart.isEmpty()) {
+                    // El modelo respondió con texto: se cierra el loop de function calling.
+                    break;
+                }
+
                 FunctionCall call = functionCallPart.get().functionCall().get();
                 String resultadoFuncion = "";
                 Map<String, Object> args = call.args().orElse(Map.of());
@@ -170,28 +181,22 @@ public class GeminiService {
                 chatHistory.add(Content.builder().role("user")
                         .parts(List.of(Part.builder().text("Resultado de '" + call.name().orElse("") + "': " + resultadoFuncion).build()))
                         .build());
-
-                GenerateContentResponse responseFinal = client.models.generateContent("gemini-3.5-flash", chatHistory, config);
-                Content finalContent = responseFinal.candidates().get().get(0).content().get();
-                chatHistory.add(finalContent);
-
-                String textoFinal;
-                Optional<Part> textPart = finalContent.parts().get().stream()
-                        .filter(p -> p.text().isPresent())
-                        .findFirst();
-
-                if (textPart.isPresent()) {
-                    textoFinal = textPart.get().text().get();
-                } else {
-                    textoFinal = "Necesito un poco más de información para completar esto. ¿Podrías darme más detalles?";
-                }
-                chatService.guardarInteraccion(usuario, promptCorregido, textoFinal);
-                return textoFinal;
             }
 
-            String textoDirecto = modelResponseContent.parts().get().get(0).text().orElse("");
-            chatService.guardarInteraccion(usuario, promptCorregido, textoDirecto);
-            return textoDirecto;
+            Optional<Part> textPart = modelResponseContent.parts().get().stream()
+                    .filter(p -> p.text().isPresent())
+                    .findFirst();
+
+            String textoFinal;
+            if (textPart.isPresent()) {
+                textoFinal = textPart.get().text().get();
+            } else {
+                // Se agotaron las iteraciones y el modelo seguía pidiendo funciones sin dar texto.
+                textoFinal = "No pude completar la operación tras varios intentos encadenando acciones. " +
+                        "Por favor, intentá reformular tu pedido o dame más detalles.";
+            }
+            chatService.guardarInteraccion(usuario, promptCorregido, textoFinal);
+            return textoFinal;
 
         } catch (Exception e) {
             e.printStackTrace();
