@@ -47,7 +47,7 @@ public class LogroService {
                 continue;   //seguinmos con el siguiente evaluador
             }
 
-            //buscamos el logro en la BDD
+            //buscamos el tipo de logro en la BDD
             Logro logro = logroRepository.findByTipoLogro(logroEvaluator.getTipo()).orElseThrow();
 
             //creamos el evento del historial
@@ -80,7 +80,7 @@ public class LogroService {
             return;
         }
 
-        //buscamos el logro en la BDD
+        //buscamos el tipo de logro en la BDD
         Logro logro = logroRepository.findByTipoLogro(tipoLogro).orElseThrow();
 
         //creamos el evento del historial
