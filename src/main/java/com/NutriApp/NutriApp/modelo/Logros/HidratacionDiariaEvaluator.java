@@ -3,6 +3,7 @@ package com.NutriApp.NutriApp.modelo.Logros;
 import com.NutriApp.NutriApp.modelo.Usuario;
 import com.NutriApp.NutriApp.modelo.enums.TipoLogro;
 import com.NutriApp.NutriApp.service.DiaService;
+import com.NutriApp.NutriApp.service.HidratacionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -12,11 +13,13 @@ import java.time.LocalDate;
 @RequiredArgsConstructor
 public class HidratacionDiariaEvaluator implements LogroEvaluator{
 
-    private final DiaService diaService;
+    private final HidratacionService hidratacionService;
 
     @Override
     public boolean seCumple(LocalDate date, Usuario user) {
-        return true;
+        int totalAguaConsumida = hidratacionService.obtenerTotalAguaPorFecha(date);
+
+        return (totalAguaConsumida >= 2000);
     }
 
     @Override

@@ -7,6 +7,7 @@ import com.NutriApp.NutriApp.modelo.Usuario;
 import com.NutriApp.NutriApp.modelo.dto.HidratacionEntradaDTO;
 import com.NutriApp.NutriApp.modelo.dto.HidratacionSalidaDTO;
 import com.NutriApp.NutriApp.modelo.dto.ModificarComidaIngeridaDTO;
+import com.NutriApp.NutriApp.modelo.enums.TipoLogro;
 import com.NutriApp.NutriApp.repository.DiaRepository;
 import com.NutriApp.NutriApp.repository.HidratacionRepository;
 import jakarta.transaction.Transactional;
@@ -25,6 +26,7 @@ public class HidratacionService {
     private final HidratacionRepository hidratacionRepository;
     private final DiaService diaService;
     private final DiaRepository diaRepository;
+    private final LogroService logroService;
 
     @Transactional
     public HidratacionSalidaDTO registrarHidratacion(HidratacionEntradaDTO request, LocalDate fecha) {
@@ -61,6 +63,9 @@ public class HidratacionService {
 
         // 3. Guardamos (Spring JPA actualizará si tiene ID, o creará si es nuevo)
         Hidratacion guardada = hidratacionRepository.save(hidratacion);
+
+        // 4. Comprobamos si se gano el logro de hidratacion diaria
+        logroService.comprobarYGuerdarLogro(fecha, TipoLogro.HIDRTACION_DIARIA);
 
         return HidratacionSalidaDTO.builder()
                 .id(guardada.getId())
