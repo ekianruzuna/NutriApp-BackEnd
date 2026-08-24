@@ -2,10 +2,7 @@ package com.NutriApp.NutriApp.service;
 
 import com.NutriApp.NutriApp.exceptions.DiaInvalidoException;
 import com.NutriApp.NutriApp.mapper.DiaMapper;
-import com.NutriApp.NutriApp.modelo.ActividadFisica;
-import com.NutriApp.NutriApp.modelo.ComidaIngerida;
-import com.NutriApp.NutriApp.modelo.Dia;
-import com.NutriApp.NutriApp.modelo.Usuario;
+import com.NutriApp.NutriApp.modelo.*;
 import com.NutriApp.NutriApp.modelo.dto.DiaDTO;
 import com.NutriApp.NutriApp.repository.DiaRepository;
 import com.NutriApp.NutriApp.repository.UsuarioRepository;
@@ -38,7 +35,6 @@ public class DiaService {
 
     // Devuelve un día por fecha, o lo crea si no existe
     public Dia obtenerODiaOCrear(LocalDate fecha) {
-
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         Usuario user = (Usuario) auth.getPrincipal();
 
@@ -47,11 +43,17 @@ public class DiaService {
                     Dia nuevoDia = new Dia();
                     nuevoDia.setFecha(fecha);
                     nuevoDia.setUsuario(user);
+
+                    // Inicializar la hidratación
+                    Hidratacion nuevaHidratacion = new Hidratacion();
+                    nuevaHidratacion.setCantidadMl(0); // Valor inicial
+                    nuevaHidratacion.setDia(nuevoDia); // Vínculo bidireccional obligatorio
+
+                    nuevoDia.setHidratacion(nuevaHidratacion); // Asignar al día
+
                     guardar(nuevoDia);
                     return nuevoDia;
                 });
-
-
     }
 
     // Obtener un día por fecha

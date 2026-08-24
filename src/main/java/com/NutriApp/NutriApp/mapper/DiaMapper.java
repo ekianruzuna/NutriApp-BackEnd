@@ -3,9 +3,11 @@ package com.NutriApp.NutriApp.mapper;
 import com.NutriApp.NutriApp.modelo.ActividadFisica;
 import com.NutriApp.NutriApp.modelo.ComidaIngerida;
 import com.NutriApp.NutriApp.modelo.Dia;
+import com.NutriApp.NutriApp.modelo.Hidratacion;
 import com.NutriApp.NutriApp.modelo.dto.ActividadFisicaSalidaDTO;
 import com.NutriApp.NutriApp.modelo.dto.ComidaIngeridaSalidaDTO;
 import com.NutriApp.NutriApp.modelo.dto.DiaDTO;
+import com.NutriApp.NutriApp.modelo.dto.HidratacionSalidaDTO;
 
 import java.util.stream.Collectors;
 
@@ -30,7 +32,22 @@ public class DiaMapper {
                         .collect(Collectors.toList())
         );
 
+        // --- Mapeo de Hidratación (Nuevo) ---
+        if (dia.getHidratacion() != null) {
+            dto.setHidratacion(toHidratacionSalidaDTO(dia.getHidratacion()));
+        }
+
         return dto;
+    }
+
+    // Método auxiliar para mapear el objeto de hidratación
+    public static HidratacionSalidaDTO toHidratacionSalidaDTO(Hidratacion hidratacion) {
+        return HidratacionSalidaDTO.builder()
+                .id(hidratacion.getId())
+                .cantidadMl(hidratacion.getCantidadMl())
+                // Suponiendo que quieres la fecha del día asociado
+                .fecha(hidratacion.getDia().getFecha())
+                .build();
     }
 
     private static ComidaIngeridaSalidaDTO toComidaIngeridaSalidaDTO(ComidaIngerida comida) {

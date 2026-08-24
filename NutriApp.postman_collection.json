@@ -1,0 +1,2304 @@
+{
+	"info": {
+		"_postman_id": "4798ca19-015e-4fc7-8bdb-e237c06438cc",
+		"name": "NutriApp",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "45261045",
+		"_collection_link": "https://ekian-7811394.postman.co/workspace/Ekian's-Workspace~4773c406-52e3-4913-80db-cd3003a693ef/collection/45261045-4798ca19-015e-4fc7-8bdb-e237c06438cc?action=share&source=collection_link&creator=45261045"
+	},
+	"item": [
+		{
+			"name": "Cuenta",
+			"item": [
+				{
+					"name": "registrarse",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"usuario\": {\r\n    \"username\": \"zurli\",\r\n    \"password\": \"zuriuruzuna1!\"\r\n  },\r\n  \"persona\": {\r\n    \"nombre\": \"John\",\r\n    \"apellido\": \"Doe\",\r\n    \"dni\": \"47058673\",\r\n    \"fechaNacimiento\": \"1990-05-15\",\r\n    \"telefono\": \"1234567890\",\r\n    \"direccion\": \"Calle Falsa 123\",\r\n    \"genero\": \"MASCULINO\",\r\n    \"email\": \"ekianuruzuna@gmail.com\"\r\n  },\r\n  \"perfilNutricional\": {\r\n    \"peso\": 70.5,\r\n    \"altura\": 175.0,\r\n    \"nivelActividadFisica\": \"MODERADA\",\r\n    \"edad\": 34,\r\n    \"objetivoCaloricoTipo\": \"MANTENIMIENTO\"\r\n  }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/auth/registro",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"auth",
+								"registro"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const json = pm.response.json();\r",
+									"pm.globals.set(\"token\", json.token);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\" : \"ekianuruzuna\",\r\n    \"password\" : \"ekian\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/auth/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "mostrar mis datos como persona",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/persona/mostrarMisDatos",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"persona",
+								"mostrarMisDatos"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "mostrar perfil nutricional",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/perfil-nutricional/obtener",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"perfil-nutricional",
+								"obtener"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "cambiar contraseña",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"ekianuruzuna\",\r\n    \"password\": \"ekian\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/usuario/modificarContraseña",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"usuario",
+								"modificarContraseña"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "modificar mis datos de persona",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"nombre\": \"John\",\r\n    \"apellido\": \"Doe\",\r\n    \"dni\": \"47057834\",\r\n    \"fechaNacimiento\": \"1990-05-15\",\r\n    \"telefono\": \"1234567890\",\r\n    \"direccion\": \"Udine 1355\",\r\n    \"genero\": \"FEMENINO\",\r\n    \"email\": \"john.doe@example.com\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/persona/actualizar-persona",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"persona",
+								"actualizar-persona"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "modificar mi perfil nutricional",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"peso\": 70.5,\r\n    \"altura\": 177.0,\r\n    \"nivelActividadFisica\": \"MODERADA\",\r\n    \"edad\": 34,\r\n    \"objetivoCaloricoTipo\": \"MANTENIMIENTO\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/perfil-nutricional/actualizar",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"perfil-nutricional",
+								"actualizar"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "eliminar tu cuenta",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqb2huZG9lMTIzIiwicm9sZXMiOlt7ImF1dGhvcml0eSI6IlJPTEVfQ0xJRU5UIn1dLCJpYXQiOjE3NTA3NzYzNjQsImV4cCI6MTc1MDc3OTk2NH0.f0NHyc71gWUQUmG2VKYT6N1fAXYUEOU3D72IWMxpbUE",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/usuario/eliminarCuenta",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"usuario",
+								"eliminarCuenta"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Solicitudes",
+			"item": [
+				{
+					"name": "insertarSolicitudAltaAlimento",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "idPersonaBuscar",
+								"value": "1",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqb2huZG9lMTIzIiwicm9sZXMiOlt7ImF1dGhvcml0eSI6IlJPTEVfQ0xJRU5UIn1dLCJpYXQiOjE3NTA4NjUwMDgsImV4cCI6MTc1MDg2ODYwOH0.a62IT03qkcVPZWB5DeddY1Okvxb2TUTWHRBEL4LeL6w",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"nombreComida\" : \"papa\",\r\n    \"porcion\" : 100,\r\n    \"calorias\" : 50,\r\n    \"proteinas\" : 5,\r\n    \"grasas\" : 20,\r\n    \"carbohidratos\" : 10\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/solicitud/insertar",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"solicitud",
+								"insertar"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "listarTodasLasSolicitudes",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJla2lhbnVydXp1bmEiLCJyb2xlcyI6W3siYXV0aG9yaXR5IjoiUk9MRV9BRE1JTiJ9XSwiaWF0IjoxNzUwNDY3NjU3LCJleHAiOjE3NTA0NzEyNTd9.t6uVC2maBnvS5a2bdpvODcNeh9JdCXevyXaIymMfCLM",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/api/solicitud/listar/todas",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"solicitud",
+								"listar",
+								"todas"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "filtrarSolicitudesPorFecha",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJla2lhbnVydXp1bmEiLCJyb2xlcyI6W3siYXV0aG9yaXR5IjoiUk9MRV9BRE1JTiJ9XSwiaWF0IjoxNzUwNDY3NjU3LCJleHAiOjE3NTA0NzEyNTd9.t6uVC2maBnvS5a2bdpvODcNeh9JdCXevyXaIymMfCLM",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/api/solicitud/filtrar/fecha?fechaFiltrar=2025-06-27",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"solicitud",
+								"filtrar",
+								"fecha"
+							],
+							"query": [
+								{
+									"key": "fechaFiltrar",
+									"value": "2025-06-27"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "filtrarSolicitudesPorUsername",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJla2lhbnVydXp1bmEiLCJyb2xlcyI6W3siYXV0aG9yaXR5IjoiUk9MRV9BRE1JTiJ9XSwiaWF0IjoxNzUwNjQyNTkwLCJleHAiOjE3NTA2NDYxOTB9.-wdJt_NvaGR0Sf0s091Fmv52_cqA9BH1LNCNG6LYrZc",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/api/solicitud/filtrar/username?username=ekianuruzuna",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"solicitud",
+								"filtrar",
+								"username"
+							],
+							"query": [
+								{
+									"key": "username",
+									"value": "ekianuruzuna"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "filtrarSolicitudPorNombreComida",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJla2lhbnVydXp1bmEiLCJyb2xlcyI6W3siYXV0aG9yaXR5IjoiUk9MRV9BRE1JTiJ9XSwiaWF0IjoxNzUwNjQyNTkwLCJleHAiOjE3NTA2NDYxOTB9.-wdJt_NvaGR0Sf0s091Fmv52_cqA9BH1LNCNG6LYrZc",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/api/solicitud/filtrar/nombreComida?nombreComida=milanesa",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"solicitud",
+								"filtrar",
+								"nombreComida"
+							],
+							"query": [
+								{
+									"key": "nombreComida",
+									"value": "milanesa"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "listarMisSolicitudes",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJla2lhbnVydXp1bmEiLCJyb2xlcyI6W3siYXV0aG9yaXR5IjoiUk9MRV9BRE1JTiJ9XSwiaWF0IjoxNzUwNjQyNTkwLCJleHAiOjE3NTA2NDYxOTB9.-wdJt_NvaGR0Sf0s091Fmv52_cqA9BH1LNCNG6LYrZc",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/api/solicitud/listar/misSolicitudes",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"solicitud",
+								"listar",
+								"misSolicitudes"
+							],
+							"query": [
+								{
+									"key": "",
+									"value": null,
+									"disabled": true
+								}
+							]
+						},
+						"description": "lista todas las solicitudes que tiene un cliente registrado a su nombre"
+					},
+					"response": []
+				},
+				{
+					"name": "eliminarMiSolicitud",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJla2lhbnVydXp1bmEiLCJyb2xlcyI6W3siYXV0aG9yaXR5IjoiUk9MRV9BRE1JTiJ9XSwiaWF0IjoxNzUwNjUxNzc0LCJleHAiOjE3NTA2NTUzNzR9.AuY-a4lw_E3lYogcr48LmoHfAe_LM6Bb6Jp4d0sKeYI",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/api/solicitud/eliminar?nombreComidaSolicitudEliminar=manzana",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"solicitud",
+								"eliminar"
+							],
+							"query": [
+								{
+									"key": "nombreComidaSolicitudEliminar",
+									"value": "manzana"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "modificarMiSolicitud",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ2YWxlbnRpbnNhY2NoZXR0YSIsInJvbGVzIjpbeyJhdXRob3JpdHkiOiJST0xFX0FETUlOIn1dLCJpYXQiOjE3NTA4MjQ0MTgsImV4cCI6MTc1MDgyODAxOH0.K6KpicdrX1jS6-0FrC0nSkj0iza2RYklU1fsYxJWVvE",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"calorias\" : 30,\r\n    \"proteinas\" : 10,\r\n    \"carbohidratos\" : 75\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/solicitud/modificar/miSolicitud?nombreComidaModificar=papa",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"solicitud",
+								"modificar",
+								"miSolicitud"
+							],
+							"query": [
+								{
+									"key": "nombreComidaModificar",
+									"value": "papa"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "aceptarSolicitud",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "idPersonaBuscar",
+								"value": "1",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJla2lhbnVydXp1bmEiLCJyb2xlcyI6W3siYXV0aG9yaXR5IjoiUk9MRV9BRE1JTiJ9XSwiaWF0IjoxNzUwNzI2MDA3LCJleHAiOjE3NTA3Mjk2MDd9.AUtpEGVVGa3vtEiSeZ8d9Ci70yfV7e7miB4zylcLAWs",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/api/solicitud/aceptar?idSolicitud=1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"solicitud",
+								"aceptar"
+							],
+							"query": [
+								{
+									"key": "idSolicitud",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "rechazarSolicitud",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJla2lhbnVydXp1bmEiLCJyb2xlcyI6W3siYXV0aG9yaXR5IjoiUk9MRV9BRE1JTiJ9XSwiaWF0IjoxNzUwNzI3MzE4LCJleHAiOjE3NTA3MzA5MTh9.dfMS4jQP9xQHq2606yIHtN_doGT65WtqpFAgJPm-yG4",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/api/solicitud/rechazar?idSolicitud=2",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"solicitud",
+								"rechazar"
+							],
+							"query": [
+								{
+									"key": "idSolicitud",
+									"value": "2"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Alimentos",
+			"item": [
+				{
+					"name": "API",
+					"item": [
+						{
+							"name": "buscarApi",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ2YWxlbnRpbnNhY2NoZXR0YSIsInJvbGVzIjpbeyJhdXRob3JpdHkiOiJST0xFX0FETUlOIn1dLCJpYXQiOjE3NTA4MTkzMjksImV4cCI6MTc1MDgyMjkyOX0.z6qJ5s5HSwMdoXYYi3Kvw3TUULWafk8EkdndO-T0O8Q",
+										"type": "text",
+										"disabled": true
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8080/api/alimentos/buscar?nombre=dsadawda",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"alimentos",
+										"buscar"
+									],
+									"query": [
+										{
+											"key": "nombre",
+											"value": "dsadawda"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "detalleApi",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer  eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ2YWxlbnRpbnNhY2NoZXR0YSIsInJvbGVzIjpbeyJhdXRob3JpdHkiOiJST0xFX0FETUlOIn1dLCJpYXQiOjE3NTA4MTQxNjEsImV4cCI6MTc1MDgxNzc2MX0.-4bm0gsfANkTQxNharCMLsKTUSPSedZu0QsOSA1aBcA",
+										"type": "text",
+										"disabled": true
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "http://localhost:8080/api/alimentos/detalle/2012128",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"alimentos",
+										"detalle",
+										"2012128"
+									],
+									"query": [
+										{
+											"key": "fdcId",
+											"value": "2012128",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "BDD",
+					"item": [
+						{
+							"name": "listarTodosAlimentosNuestraBDD",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer  eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJla2lhbnVydXp1bmEiLCJyb2xlcyI6W3siYXV0aG9yaXR5IjoiUk9MRV9BRE1JTiJ9XSwiaWF0IjoxNzUwODY2ODA3LCJleHAiOjE3NTA4NzA0MDd9.ACC29XopkBM6v51lt_VF-7dK1A9m-SZ-oKQVHFPPdHs",
+										"type": "text",
+										"disabled": true
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "http://localhost:8080/api/alimentos-usuario/listarTodos",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"alimentos-usuario",
+										"listarTodos"
+									],
+									"query": [
+										{
+											"key": "fdcId",
+											"value": "2012128",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "filtrarAlimentosNuestraBDD",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer  eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ2YWxlbnRpbnNhY2NoZXR0YSIsInJvbGVzIjpbeyJhdXRob3JpdHkiOiJST0xFX0FETUlOIn1dLCJpYXQiOjE3NTA4MTQxNjEsImV4cCI6MTc1MDgxNzc2MX0.-4bm0gsfANkTQxNharCMLsKTUSPSedZu0QsOSA1aBcA",
+										"type": "text",
+										"disabled": true
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "http://localhost:8080/api/alimentos-usuario/filtrar?nombreComida=ban",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"alimentos-usuario",
+										"filtrar"
+									],
+									"query": [
+										{
+											"key": "fdcId",
+											"value": "2012128",
+											"disabled": true
+										},
+										{
+											"key": "nombreComida",
+											"value": "ban"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Global",
+					"item": [
+						{
+							"name": "buscarAlimentosEnApiYbdd",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8080/api/alimentos/global/buscar?nombreComida=banana",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"alimentos",
+										"global",
+										"buscar"
+									],
+									"query": [
+										{
+											"key": "nombreComida",
+											"value": "banana"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Comida Ingerida",
+			"item": [
+				{
+					"name": "guardar comida ingerida",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer  eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqb2huZG9lMTIzIiwicm9sZXMiOlt7ImF1dGhvcml0eSI6IlJPTEVfQ0xJRU5UIn1dLCJpYXQiOjE3NTA3NzUxMTAsImV4cCI6MTc1MDc3ODcxMH0.68H0jSb47tX7xhUn7p3z7eJYDFgnfcWGg6kAYZ03WHo",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\" : 2384436,\r\n    \"nombreComida\" : \"ENSALADA CRIOLLA PICKLED MIXED VEGETABLES, ENSALADA CRIOLLA\",\r\n    \"gramos\" : 200,\r\n    \"tipoComida\" : \"ALMUERZO\",\r\n    \"fecha\" : \"2025-06-27\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/comidas/agregar",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"comidas",
+								"agregar"
+							],
+							"query": [
+								{
+									"key": "idComida",
+									"value": "1",
+									"disabled": true
+								},
+								{
+									"key": "gramos",
+									"value": "200",
+									"disabled": true
+								},
+								{
+									"key": "tipoComida",
+									"value": "DESAYUNO",
+									"disabled": true
+								},
+								{
+									"key": "fecha",
+									"value": "2025-06-24",
+									"disabled": true
+								},
+								{
+									"key": "nombre",
+									"value": "manzana",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "modificar alimento",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\" : 2384436,\r\n    \"nombre\" : \"ENSALADA CRIOLLA PICKLED MIXED VEGETABLES, ENSALADA CRIOLLA\",\r\n    \"gramos\" : 500,\r\n    \"tipoComida\" : \"ALMUERZO\",\r\n    \"tipoComidaNuevo\" : \"CENA\",\r\n    \"fecha\" : \"2025-06-27\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/comidas/modificar",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"comidas",
+								"modificar"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ver calorias ingeridas por dia",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer  eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqb2huZG9lMTIzIiwicm9sZXMiOlt7ImF1dGhvcml0eSI6IlJPTEVfQ0xJRU5UIn1dLCJpYXQiOjE3NTA3NzUxMTAsImV4cCI6MTc1MDc3ODcxMH0.68H0jSb47tX7xhUn7p3z7eJYDFgnfcWGg6kAYZ03WHo",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/comidas/calorias-dia?fecha=2025-06-27",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"comidas",
+								"calorias-dia"
+							],
+							"query": [
+								{
+									"key": "fecha",
+									"value": "2025-06-27"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "eliminar un alimento",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer  eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqb2huZG9lMTIzIiwicm9sZXMiOlt7ImF1dGhvcml0eSI6IlJPTEVfQ0xJRU5UIn1dLCJpYXQiOjE3NTA3NzUxMTAsImV4cCI6MTc1MDc3ODcxMH0.68H0jSb47tX7xhUn7p3z7eJYDFgnfcWGg6kAYZ03WHo",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/comidas/eliminar?fecha=2025-06-27&comidaId=2384436&tipoComida=ALMUERZO",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"comidas",
+								"eliminar"
+							],
+							"query": [
+								{
+									"key": "fecha",
+									"value": "2025-06-27"
+								},
+								{
+									"key": "comidaId",
+									"value": "2384436"
+								},
+								{
+									"key": "tipoComida",
+									"value": "ALMUERZO"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Comidas Favoritas",
+			"item": [
+				{
+					"name": "agregar comidaFavorita a paquete",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqb2huZG9lMTIzIiwicm9sZXMiOlt7ImF1dGhvcml0eSI6IlJPTEVfQ0xJRU5UIn1dLCJpYXQiOjE3NTA3NzYzNjQsImV4cCI6MTc1MDc3OTk2NH0.f0NHyc71gWUQUmG2VKYT6N1fAXYUEOU3D72IWMxpbUE",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"nombrePaquete\": \"Desayuno piolon\",\r\n  \"nombreComida\": \"ENSALADA CRIOLLA PICKLED MIXED VEGETABLES, ENSALADA CRIOLLA\",\r\n  \"comidaId\": 2384436,\r\n  \"cantidad\": 50.0\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/comidas-favoritas/agregar",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"comidas-favoritas",
+								"agregar"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Listar tus alimentos de un paquete",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqb2huZG9lMTIzIiwicm9sZXMiOlt7ImF1dGhvcml0eSI6IlJPTEVfQ0xJRU5UIn1dLCJpYXQiOjE3NTA3NzYzNjQsImV4cCI6MTc1MDc3OTk2NH0.f0NHyc71gWUQUmG2VKYT6N1fAXYUEOU3D72IWMxpbUE",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/comidas-favoritas/listar?nombrePaquete=Desayuno piolon",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"comidas-favoritas",
+								"listar"
+							],
+							"query": [
+								{
+									"key": "nombrePaquete",
+									"value": "Desayuno piolon"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "modificar cantidad de gramos de alimento de paquete",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"nombrePaquete\": \"Desayuno piolon\",\r\n  \"idComida\": 2384436,\r\n  \"nuevaCantidad\": 700\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/comidas-favoritas/modificar-cantidad",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"comidas-favoritas",
+								"modificar-cantidad"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "eliminar una comida de un paquete",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/comidas-favoritas/eliminar?nombrePaquete=Desayuno piolon&comidaId=2384436",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"comidas-favoritas",
+								"eliminar"
+							],
+							"query": [
+								{
+									"key": "nombrePaquete",
+									"value": "Desayuno piolon"
+								},
+								{
+									"key": "comidaId",
+									"value": "2384436"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "cargar paquete a dia",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqb2huZG9lMTIzIiwicm9sZXMiOlt7ImF1dGhvcml0eSI6IlJPTEVfQ0xJRU5UIn1dLCJpYXQiOjE3NTA3NzYzNjQsImV4cCI6MTc1MDc3OTk2NH0.f0NHyc71gWUQUmG2VKYT6N1fAXYUEOU3D72IWMxpbUE",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/comidas-favoritas/agregar-paquete-a-dia?nombrePaquete=Desayuno piolon&dia=2025-06-27&tipo=DESAYUNO",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"comidas-favoritas",
+								"agregar-paquete-a-dia"
+							],
+							"query": [
+								{
+									"key": "nombrePaquete",
+									"value": "Desayuno piolon"
+								},
+								{
+									"key": "dia",
+									"value": "2025-06-27"
+								},
+								{
+									"key": "tipo",
+									"value": "DESAYUNO"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Actividad Fisica",
+			"item": [
+				{
+					"name": "obtener tipos de actividades fisicas",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer  eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ6dXJpdXJ1enVuYSIsInJvbGVzIjpbeyJhdXRob3JpdHkiOiJST0xFX0FETUlOIn1dLCJpYXQiOjE3NTA3NzM1MzAsImV4cCI6MTc1MDc3NzEzMH0.8_DtAbx2YmCrB8kwu-X7LAQOhnYpcsOMy7noHbN3oOw",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/api/actividadesFisicas/tipos",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"actividadesFisicas",
+								"tipos"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Actividad Fisica Realizada",
+			"item": [
+				{
+					"name": "Listar Actividades Realizadas de todo el sistema",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer  eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ6dXJpdXJ1enVuYSIsInJvbGVzIjpbeyJhdXRob3JpdHkiOiJST0xFX0FETUlOIn1dLCJpYXQiOjE3NTA3NzM1MzAsImV4cCI6MTc1MDc3NzEzMH0.8_DtAbx2YmCrB8kwu-X7LAQOhnYpcsOMy7noHbN3oOw",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/actividadesFisicas/listarActividades/sistema",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"actividadesFisicas",
+								"listarActividades",
+								"sistema"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "filtrar por tipo de actividad de todo el sistema",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer  eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ6dXJpdXJ1enVuYSIsInJvbGVzIjpbeyJhdXRob3JpdHkiOiJST0xFX0FETUlOIn1dLCJpYXQiOjE3NTA3NzM1MzAsImV4cCI6MTc1MDc3NzEzMH0.8_DtAbx2YmCrB8kwu-X7LAQOhnYpcsOMy7noHbN3oOw",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/actividadesFisicas/filtrar?tipoActividad=CORRER",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"actividadesFisicas",
+								"filtrar"
+							],
+							"query": [
+								{
+									"key": "tipoActividad",
+									"value": "CORRER"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Agregar Actividad Realizada",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer  eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ6dXJpdXJ1enVuYSIsInJvbGVzIjpbeyJhdXRob3JpdHkiOiJST0xFX0FETUlOIn1dLCJpYXQiOjE3NTA3NzM1MzAsImV4cCI6MTc1MDc3NzEzMH0.8_DtAbx2YmCrB8kwu-X7LAQOhnYpcsOMy7noHbN3oOw",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"tipoActividad\" : \"CORRER\",\r\n    \"intensidad\" : \"MODERADA\",\r\n    \"duracionMin\" : \"120.0\" \r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/actividadesFisicas/agregar",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"actividadesFisicas",
+								"agregar"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Listar Actividades Realizadas en una Fecha",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer  eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ6dXJpdXJ1enVuYSIsInJvbGVzIjpbeyJhdXRob3JpdHkiOiJST0xFX0FETUlOIn1dLCJpYXQiOjE3NTA3NzM1MzAsImV4cCI6MTc1MDc3NzEzMH0.8_DtAbx2YmCrB8kwu-X7LAQOhnYpcsOMy7noHbN3oOw",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/api/actividadesFisicas/listarActividadesRealizadas?fecha=2025-06-27",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"actividadesFisicas",
+								"listarActividadesRealizadas"
+							],
+							"query": [
+								{
+									"key": "fecha",
+									"value": "2025-06-27"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "filtrar actividades realizadas en un dia",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/actividadesFisicas/filtrar/actividadesRealizadas?fecha=2025-06-27&tipoActividad=CORRER",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"actividadesFisicas",
+								"filtrar",
+								"actividadesRealizadas"
+							],
+							"query": [
+								{
+									"key": "fecha",
+									"value": "2025-06-27"
+								},
+								{
+									"key": "tipoActividad",
+									"value": "CORRER"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "agregar actividad dia especifico",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer  eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ6dXJpdXJ1enVuYSIsInJvbGVzIjpbeyJhdXRob3JpdHkiOiJST0xFX0FETUlOIn1dLCJpYXQiOjE3NTA3NzM1MzAsImV4cCI6MTc1MDc3NzEzMH0.8_DtAbx2YmCrB8kwu-X7LAQOhnYpcsOMy7noHbN3oOw",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"tipoActividad\" : \"GYM\",\r\n    \"intensidad\" : \"MODERADA\",\r\n    \"duracionMin\" : \"200.0\"\r\n    \r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/actividadesFisicas/agregar/diaEspecifico?fecha=2025-06-20",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"actividadesFisicas",
+								"agregar",
+								"diaEspecifico"
+							],
+							"query": [
+								{
+									"key": "fecha",
+									"value": "2025-06-20"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "modificar actividad fisica",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"tipoActividad\" : \"GYM\",\r\n    \"intensidad\" : \"MODERADA\",\r\n    \"duracionMin\" : \"10.00\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/actividadesFisicas/modificar?fecha=2025-06-20&id=4",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"actividadesFisicas",
+								"modificar"
+							],
+							"query": [
+								{
+									"key": "fecha",
+									"value": "2025-06-20"
+								},
+								{
+									"key": "id",
+									"value": "4"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "eliminar actividad fisica",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer  eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ6dXJpdXJ1enVuYSIsInJvbGVzIjpbeyJhdXRob3JpdHkiOiJST0xFX0FETUlOIn1dLCJpYXQiOjE3NTA3NzM1MzAsImV4cCI6MTc1MDc3NzEzMH0.8_DtAbx2YmCrB8kwu-X7LAQOhnYpcsOMy7noHbN3oOw",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/actividadesFisicas/eliminar?fecha=2025-06-27&id=1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"actividadesFisicas",
+								"eliminar"
+							],
+							"query": [
+								{
+									"key": "fecha",
+									"value": "2025-06-27"
+								},
+								{
+									"key": "id",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Usuarios",
+			"item": [
+				{
+					"name": "Clientes",
+					"item": [
+						{
+							"name": "listar clientes",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ2YWxlbnRpbnNhY2NoZXR0YSIsInJvbGVzIjpbeyJhdXRob3JpdHkiOiJST0xFX0FETUlOIn1dLCJpYXQiOjE3NTA3Nzg4NDQsImV4cCI6MTc1MDc4MjQ0NH0.iKyhHkmYVECQGySR2WJl4x4xguNIEMgB8Ia6XwQhKlo",
+										"type": "text",
+										"disabled": true
+									}
+								],
+								"url": {
+									"raw": "http://localhost:8080/usuario/listarClientes",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"usuario",
+										"listarClientes"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "filtrar Clientes",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8080/usuario/filtrarClientes?filtro=nelia",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"usuario",
+										"filtrarClientes"
+									],
+									"query": [
+										{
+											"key": "filtro",
+											"value": "nelia"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "cambiar el Rol de un usuario",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJla2lhbnVydXp1bmEiLCJyb2xlcyI6W3siYXV0aG9yaXR5IjoiUk9MRV9BRE1JTiJ9XSwiaWF0IjoxNzUwMzA0MDMyLCJleHAiOjE3NTAzMDc2MzJ9.AeOeVnTZsQN-z8GmIKkXzvWre1rBsbyvRVHFJ8tTgr8",
+										"type": "text",
+										"disabled": true
+									}
+								],
+								"url": {
+									"raw": "http://localhost:8080/api/rol/cambiar/admin?username=JuaniVT",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"rol",
+										"cambiar",
+										"admin"
+									],
+									"query": [
+										{
+											"key": "username",
+											"value": "JuaniVT"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "eliminar cliente",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8080/usuario/eliminar?username=JuaniVT",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"usuario",
+										"eliminar"
+									],
+									"query": [
+										{
+											"key": "username",
+											"value": "JuaniVT"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Personas",
+					"item": [
+						{
+							"name": "listar todas las personas del sistema",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8080/api/persona/listar",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"persona",
+										"listar"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "obtener los datos de una persona",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8080/api/persona/obtener?id=2",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"persona",
+										"obtener"
+									],
+									"query": [
+										{
+											"key": "id",
+											"value": "2"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Dias",
+			"item": [
+				{
+					"name": "ver día completo",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer  eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqb2huZG9lMTIzIiwicm9sZXMiOlt7ImF1dGhvcml0eSI6IlJPTEVfQ0xJRU5UIn1dLCJpYXQiOjE3NTA3NzUxMTAsImV4cCI6MTc1MDc3ODcxMH0.68H0jSb47tX7xhUn7p3z7eJYDFgnfcWGg6kAYZ03WHo",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/dias/ver/completo?fecha=2025-06-27",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"dias",
+								"ver",
+								"completo"
+							],
+							"query": [
+								{
+									"key": "fecha",
+									"value": "2025-06-27"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ver todo el historial de dias",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer  eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqb2huZG9lMTIzIiwicm9sZXMiOlt7ImF1dGhvcml0eSI6IlJPTEVfQ0xJRU5UIn1dLCJpYXQiOjE3NTA3NzUxMTAsImV4cCI6MTc1MDc3ODcxMH0.68H0jSb47tX7xhUn7p3z7eJYDFgnfcWGg6kAYZ03WHo",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/dias/ver/todos",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"dias",
+								"ver",
+								"todos"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

@@ -49,4 +49,7 @@ public class Dia {
 
     @OneToMany(mappedBy = "dia", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ActividadFisica> actividadesFisicasRealizadas = new ArrayList<>();
+
+    @OneToOne(mappedBy = "dia", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Hidratacion hidratacion = new Hidratacion();
 }
