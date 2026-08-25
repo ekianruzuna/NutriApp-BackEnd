@@ -6,7 +6,6 @@ import com.NutriApp.NutriApp.modelo.Usuario;
 import com.NutriApp.NutriApp.modelo.enums.TipoLogro;
 import com.NutriApp.NutriApp.repository.HidratacionRepository;
 import com.NutriApp.NutriApp.service.DiaService;
-import com.NutriApp.NutriApp.service.HidratacionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -35,6 +34,6 @@ public class HidratacionDiariaEvaluator implements LogroEvaluator{
 
     @Override
     public TipoLogro getTipo() {
-        return TipoLogro.HIDRTACION_DIARIA;
+        return TipoLogro.HIDRATACION_DIARIA;
     }
 }

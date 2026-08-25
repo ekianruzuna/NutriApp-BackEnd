@@ -1,12 +1,10 @@
 package com.NutriApp.NutriApp.service;
 
-import com.NutriApp.NutriApp.modelo.ComidaIngerida;
 import com.NutriApp.NutriApp.modelo.Dia;
 import com.NutriApp.NutriApp.modelo.Hidratacion;
 import com.NutriApp.NutriApp.modelo.Usuario;
 import com.NutriApp.NutriApp.modelo.dto.HidratacionEntradaDTO;
 import com.NutriApp.NutriApp.modelo.dto.HidratacionSalidaDTO;
-import com.NutriApp.NutriApp.modelo.dto.ModificarComidaIngeridaDTO;
 import com.NutriApp.NutriApp.modelo.enums.TipoLogro;
 import com.NutriApp.NutriApp.repository.DiaRepository;
 import com.NutriApp.NutriApp.repository.HidratacionRepository;
@@ -65,7 +63,7 @@ public class HidratacionService {
         Hidratacion guardada = hidratacionRepository.save(hidratacion);
 
         // 4. Comprobamos si se gano el logro de hidratacion diaria
-        logroService.comprobarYGuerdarLogro(fecha, TipoLogro.HIDRTACION_DIARIA);
+        logroService.comprobarYGuerdarLogro(fecha, TipoLogro.HIDRATACION_DIARIA);
 
         return HidratacionSalidaDTO.builder()
                 .id(guardada.getId())

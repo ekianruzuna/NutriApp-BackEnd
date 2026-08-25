@@ -5,7 +5,6 @@ import com.NutriApp.NutriApp.modelo.enums.TipoLogro;
 import com.NutriApp.NutriApp.repository.LogroRepository;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
-import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -20,7 +19,7 @@ public class LogroInitializer {
 
         crearSiNoExiste("Meta Calorica Diaria", TipoLogro.META_CALORICA_DIARIA);
         crearSiNoExiste("Registro de inicio de sesion seguido", TipoLogro.LOGIN);
-        crearSiNoExiste("Meta diaria de hidratacion", TipoLogro.HIDRTACION_DIARIA);
+        crearSiNoExiste("Meta diaria de hidratacion", TipoLogro.HIDRATACION_DIARIA);
 
     }
 
