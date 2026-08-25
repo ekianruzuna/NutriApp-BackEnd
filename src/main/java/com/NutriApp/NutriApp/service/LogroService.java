@@ -15,6 +15,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -55,6 +56,7 @@ public class LogroService {
                     .usuario(user)
                     .logroObtenido(logro)
                     .fechaObtencion(date)
+                    .fechaRegistro(LocalDateTime.now())
                     .build();
 
             //persistimos el logro
@@ -88,6 +90,7 @@ public class LogroService {
                 .usuario(user)
                 .logroObtenido(logro)
                 .fechaObtencion(date)
+                .fechaRegistro(LocalDateTime.now())
                 .build();
 
         //persistimos el logro
@@ -153,6 +156,7 @@ public class LogroService {
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("No existe el evaluador para :" + tipoLogro));
     }
+
 
 
 

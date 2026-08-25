@@ -8,6 +8,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -35,7 +36,11 @@ public class HistorialLogro {
     @JoinColumn(name = "logro_id", nullable = false, unique = false)
     private Logro logroObtenido;
 
+    //el dia que pertenece el logro
     private LocalDate fechaObtencion;
+
+    //la hora excata a la que se registra el logro (sirve para consultar cual fue el ultimo obtenido)
+    private LocalDateTime fechaRegistro;
 
     //le ponemos esto para que en el json solo agarre el username del usuario y no agarre todo lo demas que tiene
     @JsonProperty("username")
