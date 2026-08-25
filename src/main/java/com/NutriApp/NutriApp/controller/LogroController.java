@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
@@ -33,5 +34,18 @@ public class LogroController {
     @GetMapping("/listar/historial")
     public ResponseEntity<List<HistorialLogro>> listarHistorial (){
         return ResponseEntity.ok(logroService.obtenerHistorialLogros());
+    }
+
+    @GetMapping("/obtener/ultimo/ganado")
+    public ResponseEntity<HistorialLogro> obtenerUltimoGanado(){
+        Optional<HistorialLogro> ultimoLogro = logroService.obtenerUltimoGanado();
+
+        if (ultimoLogro.isEmpty()){
+            //si no hay un ultimo logro retornamos una respuesta sin contenido
+            return ResponseEntity.noContent().build();
+        }
+
+        //si tiene un logro lo retornamos
+        return ResponseEntity.ok(ultimoLogro.get());
     }
 }

@@ -15,5 +15,6 @@ public interface HistorialLogroRepository extends JpaRepository<HistorialLogro, 
     Optional<HistorialLogro> findByUsuarioUsernameAndLogroObtenido_TipoLogroAndFechaObtencion(String username, TipoLogro tipoLogro, LocalDate fecha);
     int countAllByUsuario_UsernameAndLogroObtenido_TipoLogro (String username, TipoLogro tipoLogro);
     List<HistorialLogro> findAllByUsuarioUsername(String username);
+    Optional<HistorialLogro> findFirstByUsuarioUsernameOrderByFechaRegistroDesc (String username);
 
 }

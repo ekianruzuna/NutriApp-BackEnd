@@ -14,6 +14,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import javax.swing.text.html.Option;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -155,6 +156,14 @@ public class LogroService {
                 .filter(x -> x.getTipo() == tipoLogro)
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("No existe el evaluador para :" + tipoLogro));
+    }
+
+    //metodo para obtener el ultimo logro ganado
+    public Optional<HistorialLogro> obtenerUltimoGanado (){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Usuario user = (Usuario) auth.getPrincipal();
+
+        return historialLogroRepository.findFirstByUsuarioUsernameOrderByFechaRegistroDesc(user.getUsername());
     }
 
 
