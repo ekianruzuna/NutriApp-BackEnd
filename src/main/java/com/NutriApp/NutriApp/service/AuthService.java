@@ -13,10 +13,6 @@ import com.NutriApp.NutriApp.modelo.Persona;
 import com.NutriApp.NutriApp.modelo.Usuario;
 import com.NutriApp.NutriApp.modelo.enums.Role;
 import com.NutriApp.NutriApp.repository.AuthorityRepository;
-import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
-import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
-import com.google.api.client.http.javanet.NetHttpTransport;
-import com.google.api.client.json.jackson2.JacksonFactory;
 import com.NutriApp.NutriApp.service.Mail.MailService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -29,7 +25,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
-
+import org.springframework.web.client.RestTemplate;
 import java.util.AbstractMap;
 import java.util.Map;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -142,21 +138,34 @@ public class AuthService {
         return new LoginResponse(token);
     }
 
-    public GoogleIdToken.Payload verifyToken(String idTokenString) throws Exception {
+    public Map<String, Object> verifyGoogleToken(String idTokenString) {
+        try {
+            // Usamos RestTemplate para consumir la API de Google
+            RestTemplate restTemplate = new RestTemplate();
 
-        GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(
-                new NetHttpTransport(),
-                new JacksonFactory()
-        )
-                .setAudience(Collections.singletonList("1014095084666-jr120vlq4cad4uregm9qpkclkes2je8r.apps.googleusercontent.com"))
-                .build();
+            // URL estándar de Google para validar un ID Token
+            String url = "https://oauth2.googleapis.com/tokeninfo?id_token=" + idTokenString;
 
-        GoogleIdToken idToken = verifier.verify(idTokenString);
+            // Google devuelve un JSON con los claims del token
+            Map<String, Object> payload = restTemplate.getForObject(url, Map.class);
 
-        if (idToken != null) {
-            return idToken.getPayload();
-        } else {
-            throw new IllegalArgumentException("Token inválido o no verificado");
+            if (payload == null || !payload.containsKey("email")) {
+                return null;
+            }
+
+            // OPCIONAL: Validar el 'aud' (audience) para asegurar que el token es para TU aplicación
+            String audience = (String) payload.get("aud");
+            String myClientId = "1014095084666-jr120vlq4cad4uregm9qpkclkes2je8r.apps.googleusercontent.com";
+
+            if (!myClientId.equals(audience)) {
+                System.err.println("El token no pertenece a esta aplicación");
+                return null;
+            }
+
+            return payload;
+        } catch (Exception e) {
+            System.err.println("Error al validar el token con Google: " + e.getMessage());
+            return null;
         }
     }
 

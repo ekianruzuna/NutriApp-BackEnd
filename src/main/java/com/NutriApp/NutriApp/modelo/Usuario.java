@@ -86,7 +86,12 @@ public class Usuario implements UserDetails {
     @ToString.Exclude //esto hace falta para que no entre en un ciclo infinito cuando se llama al tostring
     private List<ComidaFavorita> comidaFavoritas = new ArrayList<>();
 
-
+    // Relación de Memoria: Un usuario tiene muchos mensajes de chat
+    // CascadeType.ALL asegura que si borras al usuario, se limpie su historial
+    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @JsonIgnore // Evita ciclos infinitos al serializar el usuario
+    @ToString.Exclude
+    private List<ChatMessage> historialChat = new ArrayList<>();
 
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore

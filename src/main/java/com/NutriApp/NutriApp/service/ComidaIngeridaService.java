@@ -72,27 +72,26 @@ public class ComidaIngeridaService {
 
     public ComidaIngerida convertir_comidaid(ComidaIngerida comidaIngerida, String nombre, long comida_id, double gramos) throws Exception {
 
-        MacronutrienteDTO dto = new MacronutrienteDTO();
-
+        // Intentamos obtener por nombre y ID
         Optional<MacronutrienteDTO> optionalMacronutrienteDTO = alimentoIngresadoPorUsuarioService.obtenerMacronutrientes(nombre, comida_id);
 
         if (optionalMacronutrienteDTO.isEmpty()) {
             optionalMacronutrienteDTO = nutricionService.obtenerMacronutrientesPorId(comida_id);
         }
 
-        if (!optionalMacronutrienteDTO.isEmpty() && optionalMacronutrienteDTO.get().getNombreComida().equals(nombre)) {
-            dto = optionalMacronutrienteDTO.get();
+        // --- AQUÍ ESTÁ LA MODIFICACIÓN ---
+        // En lugar de hacer .equals(nombre), verificamos si el ID es válido.
+        // El ID es el dato técnico, el nombre es solo informativo.
+        if (optionalMacronutrienteDTO.isPresent()) {
+            MacronutrienteDTO dto = optionalMacronutrienteDTO.get();
+
+            comidaIngerida.setNombreComida(dto.getNombreComida()); // Usamos el nombre REAL de la BD
+            comidaIngerida.setIdComidaApi(dto.getId_comida());
+
+            return settearComidaIngerida(comidaIngerida, gramos, dto.getCalorias(), dto.getProteinas(), dto.getGrasas(), dto.getCarbohidratos(), dto.getGramosPorPorcion());
         } else {
-            throw new ComidaIngeridaException("No se encontro la comida con nombre: " + nombre);
+            throw new ComidaIngeridaException("No se encontró el alimento con ID: " + comida_id);
         }
-
-        if (dto.getGramosPorPorcion() == 0) {
-            throw new ComidaIngeridaException("El valor de gramosPorPorcion no puede ser nulo ni cero.");
-        }
-
-        comidaIngerida.setNombreComida(dto.getNombreComida());
-        comidaIngerida.setIdComidaApi(dto.getId_comida());
-        return settearComidaIngerida(comidaIngerida, gramos, dto.getCalorias(), dto.getProteinas(), dto.getGrasas(), dto.getCarbohidratos(), dto.getGramosPorPorcion());
     }
 
     // Crear nuevo dia

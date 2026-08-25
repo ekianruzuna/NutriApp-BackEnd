@@ -26,10 +26,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
-import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
-import com.google.api.client.http.javanet.NetHttpTransport;
-import com.google.api.client.json.jackson2.JacksonFactory;
 @Validated
 @RestController // Define que esta clase manejará peticiones HTTP
 @RequestMapping("/auth") // El endpoint completo será /auth/login
@@ -67,66 +63,43 @@ public class AuthController {
 
     @PostMapping("/google")
     public ResponseEntity<?> googleLogin(@RequestBody Map<String, String> body) {
-
-
-        System.out.println("BODY RECIBIDO: " + body);
-
-// Obtener token
         String idTokenString = body.get("token");
-        System.out.println("TOKEN RECIBIDO: " + idTokenString);
 
         if (idTokenString == null || idTokenString.isBlank()) {
-            System.out.println("ERROR: Token no recibido o vacío");
             return ResponseEntity.badRequest().body("Token no recibido");
         }
 
         try {
-            // Verificar token
-            GoogleIdToken.Payload payload = authService.verifyToken(idTokenString);
-            if (payload == null) {
-                System.out.println("ERROR: Token inválido");
+            // AHORA el servicio te devuelve un mapa o DTO simple,
+            // sin depender de librerías de Google en el controlador.
+            Map<String, Object> userData = authService.verifyGoogleToken(idTokenString);
+
+            if (userData == null) {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Token inválido");
             }
 
-            // Extraer datos
-            String email = payload.getEmail();
-            String name = (String) payload.get("name");
-            System.out.println("Payload válido, email: " + email + ", name: " + name);
+            String email = (String) userData.get("email");
 
-            // Buscar usuario en DB
+            // Buscar usuario en DB (esto sigue igual)
             Optional<Usuario> usuarioOpt = usuarioRepository.findByPersonaEmail(email);
 
             if (usuarioOpt.isPresent()) {
                 Usuario usuario = usuarioOpt.get();
                 String jwt = jwtService.generateToken(usuario);
-                System.out.println("Usuario existe, generando JWT: " + jwt);
-
                 Map<String, Object> response = new HashMap<>();
                 response.put("registered", true);
                 response.put("token", jwt);
                 response.put("email", email);
                 response.put("username", usuario.getUsername());
-
                 return ResponseEntity.ok(response);
             } else {
-                System.out.println("Usuario NO existe, enviando datos para registro");
-                Map<String, Object> response = new HashMap<>();
-                response.put("registered", false);
-                response.put("email", email);
-                response.put("name", name);
-                response.put("picture", payload.get("picture"));
-                response.put("locale", payload.get("locale"));
-
-                return ResponseEntity.ok(response);
+                // Usuario no registrado
+                return ResponseEntity.ok(userData); // Devuelve los datos extraídos para el frontend
             }
 
         } catch (Exception e) {
-            System.out.println("EXCEPCION: " + e.getMessage());
-            e.printStackTrace();
-            return ResponseEntity.badRequest().body("Error verificando token: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Error verificando token: " + e.getMessage());
         }
-
-
     }
 
 

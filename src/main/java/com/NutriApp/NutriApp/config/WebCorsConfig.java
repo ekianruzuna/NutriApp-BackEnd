@@ -21,7 +21,7 @@ public class WebCorsConfig {
         CorsConfiguration config = new CorsConfiguration();
 
         // Frontend permitido
-        config.setAllowedOrigins(List.of("http://localhost:4200"));
+        config.setAllowedOrigins(List.of("http://localhost:4200", "https://dreamy-figolla-211a03.netlify.app"));
 
         // Métodos permitidos
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));

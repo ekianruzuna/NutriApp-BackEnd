@@ -2,9 +2,8 @@ package com.NutriApp.NutriApp.service;
 
 import com.NutriApp.NutriApp.modelo.EmailVerificationCode;
 import com.NutriApp.NutriApp.repository.EmailVerificationRepository;
+import com.NutriApp.NutriApp.service.Mail.MailService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -18,7 +17,7 @@ public class EmailVerificationService {
     private EmailVerificationRepository repository;
 
     @Autowired
-    private JavaMailSender mailSender;
+    private MailService mailService;
 
     // Generar código de 6 dígitos
     public String generarCodigo() {
@@ -41,15 +40,11 @@ public class EmailVerificationService {
     // Enviar email con el código
     public void enviarCorreo(String email, String codigo) {
 
-        SimpleMailMessage mensaje = new SimpleMailMessage();
-        mensaje.setTo(email);
-        mensaje.setSubject("Verificación de correo - NutriApp");
-        mensaje.setText(
-                "Tu código de verificación es: " + codigo +
-                        "\n\nEste código expira en 10 minutos."
-        );
+        String asunto = "Verificación de correo - NutriApp";
+        String mensaje = "Tu código de verificación es: " + codigo +
+                "\n\nEste código expira en 10 minutos.";
 
-        mailSender.send(mensaje);
+        mailService.enviarMail(email, asunto, mensaje);
     }
 
     // Verificar código ingresado por el usuario
