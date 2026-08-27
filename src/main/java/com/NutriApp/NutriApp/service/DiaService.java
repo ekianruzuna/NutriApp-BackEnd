@@ -4,6 +4,8 @@ import com.NutriApp.NutriApp.exceptions.DiaInvalidoException;
 import com.NutriApp.NutriApp.mapper.DiaMapper;
 import com.NutriApp.NutriApp.modelo.*;
 import com.NutriApp.NutriApp.modelo.dto.DiaDTO;
+import com.NutriApp.NutriApp.modelo.dto.EstadoDiaDTO;
+import com.NutriApp.NutriApp.modelo.enums.EstadoDia;
 import com.NutriApp.NutriApp.repository.DiaRepository;
 import com.NutriApp.NutriApp.repository.UsuarioRepository;
 import jakarta.transaction.Transactional;
@@ -25,6 +27,10 @@ public class DiaService {
     private final DiaRepository diaRepository;
     private final UsuarioService usuarioService;
 
+    // variable de tolerancia calorica para determinar el estado nutricional de un dia teniendo en cuenta
+    // que se puede pasar por pocas calorias e igualmente se lo tomamos como objetivo diario cumplido
+    private static final double TOLERANCIA_CALORICA = 50;
+
 
     // Crear nuevo dia
     public void guardar(Dia dia) {
@@ -43,6 +49,10 @@ public class DiaService {
                     Dia nuevoDia = new Dia();
                     nuevoDia.setFecha(fecha);
                     nuevoDia.setUsuario(user);
+
+                    //ponemos el estado del dia en pendiente porque cuando se crea las calorias
+                    //consumidas van a ser 0
+                    nuevoDia.setEstadoDia(EstadoDia.PENDIENTE);
 
                     // Inicializar la hidratación
                     Hidratacion nuevaHidratacion = new Hidratacion();
@@ -116,12 +126,29 @@ public class DiaService {
             }
         }
 
-        diaActual.setCaloriasRestantes(objetivoDiario - caloriasConsumidas);
+        double caloriasRestantes = objetivoDiario - caloriasConsumidas;
+
+        diaActual.setCaloriasRestantes(caloriasRestantes);
+
+        diaActual.setEstadoDia(calcularEstadoDia(caloriasConsumidas, objetivoDiario));
 
         guardar(diaActual);
     }
 
-    public double verCaloriasConsumidasDeunDia(@RequestParam LocalDate fecha) {
+    private EstadoDia calcularEstadoDia(double caloriasConsumidas, double objetivoDiario) {
+
+        if (caloriasConsumidas < objetivoDiario - TOLERANCIA_CALORICA) {
+            return EstadoDia.PENDIENTE;
+        }
+
+        if (caloriasConsumidas > objetivoDiario + TOLERANCIA_CALORICA) {
+            return EstadoDia.EXCEDIDO;
+        }
+
+        return EstadoDia.CUMPLIDO;
+    }
+
+    public double verCaloriasConsumidasDeunDia( LocalDate fecha) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         Usuario user = (Usuario) auth.getPrincipal();
 
@@ -140,6 +167,39 @@ public class DiaService {
                 .sum();
 
         return totalCalorias;
+    }
+
+
+    public List<EstadoDiaDTO> obtenerEstadosDelMes(int año, int mes) {
+
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Usuario user = (Usuario) auth.getPrincipal();
+
+        //Creamos una fecha utilizando el año y mes que recibimos, y ponemos como día el primer dia del mes
+        LocalDate fechaInicio = LocalDate.of(año, mes, 1);
+
+        //obtenemos una fecha que esta al final del mes que se paso
+        LocalDate fechaFin = fechaInicio.withDayOfMonth(
+                fechaInicio.lengthOfMonth()
+        );
+
+        // se busca todos los dias que esten asociados con el usuario y esten entre el
+        // primer día hasta el último día del mes que se paso en el frontend
+        List<Dia> dias = diaRepository.findByUsuarioAndFechaBetween(
+                user,
+                fechaInicio,
+                fechaFin
+        );
+
+
+        // transformamos la lista de dias en un stream para poder trasnformar cada entidad de dia
+        // con todos los atributos que tiene en su simple DTO que contiene su fecha y su estado
+        return dias.stream()
+                .map(dia -> new EstadoDiaDTO(
+                        dia.getFecha(),
+                        dia.getEstadoDia()
+                ))
+                .toList();
     }
 
 }

@@ -1,5 +1,6 @@
 package com.NutriApp.NutriApp.modelo;
 
+import com.NutriApp.NutriApp.modelo.enums.EstadoDia;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
@@ -38,9 +39,11 @@ public class Dia {
 
     private double caloriasRestantes;
 
+    @Enumerated(EnumType.STRING)
+    private EstadoDia estadoDia;
+
     @OneToMany(mappedBy = "dia", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ComidaIngerida> comidasIngeridas = new ArrayList<>();
-
 
     @JsonProperty("username")  //le estamos diciendo que cuando agararre un json de este objeto tambien tome este como atributo, ya que el usuario lo ignora con el @JsonIgnore
     public String getUsername(){

@@ -16,6 +16,10 @@ public interface DiaRepository extends JpaRepository<Dia, Long> {
 
     Optional<Dia> findByFechaAndUsuario(LocalDate fecha, Usuario usuario);
 
+    // se busca todos los dias que esten asociados con el usuario y esten entre el
+    // primer día hasta el último día del mes que se paso en el frontend
+    List<Dia> findByUsuarioAndFechaBetween(Usuario usuario, LocalDate fechaInicio, LocalDate fechaFin);
+
     List<Dia> findByUsuario(Usuario usuario);
 
 }
