@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -101,9 +102,9 @@ public class SolicitudService {
 
 
     // te lista todas las solicitudes ordenadas por fehca de creacion con un limite de 100 para no sobrecarcar
-    public List<SolicitudAltaAlimento> listarTodas() throws SolicitudInvalidaException{
+    public List<SolicitudAltaAlimento> listarTodas(){
         if (solicitudRespository.count() == 0){
-            throw new SolicitudInvalidaException("No hay solicitudes cargadas");
+            return new ArrayList<>();
         }
 
         return solicitudRespository.findAll().stream()
