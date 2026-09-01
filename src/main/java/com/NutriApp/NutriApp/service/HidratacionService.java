@@ -62,8 +62,14 @@ public class HidratacionService {
         // 3. Guardamos (Spring JPA actualizará si tiene ID, o creará si es nuevo)
         Hidratacion guardada = hidratacionRepository.save(hidratacion);
 
-        // 4. Comprobamos si se gano el logro de hidratacion diaria
-        logroService.comprobarYGuerdarLogro(fecha, TipoLogro.HIDRATACION_DIARIA);
+        // 4. Comprobamos si se gano el logro de hidratacion diaria.
+        // la cantidad es negativa, significa que esta sacando y comprobamos si hay que eliminar el logro
+        if(request.getCantidadMl() < 0){
+            logroService.comprobarYEliminarLogro(fecha, TipoLogro.HIDRATACION_DIARIA);
+        }else {
+            //sino siginifica que esta agregando y comprobamos si hay que agregar un logro
+            logroService.comprobarYGuerdarLogro(fecha, TipoLogro.HIDRATACION_DIARIA);
+        }
 
         return HidratacionSalidaDTO.builder()
                 .id(guardada.getId())
