@@ -135,19 +135,6 @@ public class DiaService {
         guardar(diaActual);
     }
 
-    private EstadoDia calcularEstadoDia(double caloriasConsumidas, double objetivoDiario) {
-
-        if (caloriasConsumidas < objetivoDiario - TOLERANCIA_CALORICA) {
-            return EstadoDia.PENDIENTE;
-        }
-
-        if (caloriasConsumidas > objetivoDiario + TOLERANCIA_CALORICA) {
-            return EstadoDia.EXCEDIDO;
-        }
-
-        return EstadoDia.CUMPLIDO;
-    }
-
     public double verCaloriasConsumidasDeunDia( LocalDate fecha) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         Usuario user = (Usuario) auth.getPrincipal();
@@ -167,6 +154,19 @@ public class DiaService {
                 .sum();
 
         return totalCalorias;
+    }
+
+    private EstadoDia calcularEstadoDia(double caloriasConsumidas, double objetivoDiario) {
+
+        if (caloriasConsumidas < objetivoDiario - TOLERANCIA_CALORICA) {
+            return EstadoDia.PENDIENTE;
+        }
+
+        if (caloriasConsumidas > objetivoDiario + TOLERANCIA_CALORICA) {
+            return EstadoDia.EXCEDIDO;
+        }
+
+        return EstadoDia.CUMPLIDO;
     }
 
 
@@ -193,12 +193,44 @@ public class DiaService {
 
 
         // transformamos la lista de dias en un stream para poder trasnformar cada entidad de dia
-        // con todos los atributos que tiene en su simple DTO que contiene su fecha y su estado
+        // con todos los atributos que tiene en su simple DTO
         return dias.stream()
-                .map(dia -> new EstadoDiaDTO(
-                        dia.getFecha(),
-                        dia.getEstadoDia()
-                ))
+                .map(dia -> {
+
+                    // Calcular calorías consumidas
+                    double caloriasConsumidas = 0;
+
+                    List<ComidaIngerida> comidasIngeridas =
+                            dia.getComidasIngeridas();
+
+                    if (comidasIngeridas != null && !comidasIngeridas.isEmpty()) {
+
+                        caloriasConsumidas = comidasIngeridas.stream()
+                                .mapToDouble(ComidaIngerida::getCalorias)
+                                .sum();
+                    }
+
+
+                    // Objetivo calórico base del usuario
+                    double objetivoCalorico = user.getPerfilNutricional()
+                            .getObjetivoDiario();
+
+                    // Se agregan las calorías gastadas mediante actividad física
+                    if (dia.getActividadesFisicasRealizadas() != null) {
+
+                        objetivoCalorico += dia.getActividadesFisicasRealizadas()
+                                .stream()
+                                .mapToDouble(ActividadFisica::getCaloriasGastadas)
+                                .sum();
+                    }
+
+                    return new EstadoDiaDTO(
+                            dia.getFecha(),
+                            dia.getEstadoDia(),
+                            caloriasConsumidas,
+                            objetivoCalorico
+                    );
+                })
                 .toList();
     }
 

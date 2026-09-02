@@ -12,6 +12,8 @@ public class EstadoDiaDTO {
 
     private LocalDate fecha;
     private EstadoDia estadoDia;
+    private double caloriasConsumidas;
+    private double objetivoCalorico;
 
 
 }
