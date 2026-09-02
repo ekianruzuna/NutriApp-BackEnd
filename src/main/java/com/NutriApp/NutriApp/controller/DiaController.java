@@ -3,6 +3,7 @@ package com.NutriApp.NutriApp.controller;
 
 import com.NutriApp.NutriApp.modelo.Dia;
 import com.NutriApp.NutriApp.modelo.dto.DiaDTO;
+import com.NutriApp.NutriApp.modelo.dto.EstadoDiaDTO;
 import com.NutriApp.NutriApp.service.DiaService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -36,11 +37,18 @@ public class DiaController {
 
     @Operation(summary = "Ver dias.", description = "Devuelve una lista de dias con las comidas ingeridas y actividades realizadas.")
     @GetMapping("ver/todos")
-    public ResponseEntity<List<Dia>> verHistorialDias(){
+    public ResponseEntity<List<Dia>> verHistorialDias() {
 
         return ResponseEntity.ok(diaService.verHistorialDias());
 
     }
+
+    @GetMapping("/estados-mes")
+    public ResponseEntity<List<EstadoDiaDTO>> obtenerEstadosDelMes(@RequestParam int año,@RequestParam int mes){
+
+        return ResponseEntity.ok(diaService.obtenerEstadosDelMes(año, mes));
+    }
+
 
 
 }
