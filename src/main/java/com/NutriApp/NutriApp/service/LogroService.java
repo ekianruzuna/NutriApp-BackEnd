@@ -12,11 +12,13 @@ import com.NutriApp.NutriApp.repository.LogroRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
 
 import javax.swing.text.html.Option;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -164,6 +166,20 @@ public class LogroService {
         Usuario user = (Usuario) auth.getPrincipal();
 
         return historialLogroRepository.findFirstByUsuarioUsernameOrderByFechaRegistroDesc(user.getUsername());
+    }
+
+    //obtiene todos los logros ganados por un tipo de logro determinado
+    public List<HistorialLogro> obtenerTodosPorTipoDeLogro(TipoLogro tipoLogro){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Usuario user = (Usuario) auth.getPrincipal();
+
+        List<HistorialLogro> list = historialLogroRepository.findAllByUsuarioUsernameAndLogroObtenido_TipoLogro(user.getUsername(), tipoLogro);
+
+        if (list.isEmpty()){
+            throw new LogroInvalidoException("Hubo un error");
+        }
+
+        return list;
     }
 
 

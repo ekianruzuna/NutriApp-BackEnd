@@ -48,4 +48,9 @@ public class LogroController {
         //si tiene un logro lo retornamos
         return ResponseEntity.ok(ultimoLogro.get());
     }
+
+    @GetMapping("/listar/historial/tipoLogro")
+    public ResponseEntity<List<HistorialLogro>> listarHistorialPorTipoLogro(@RequestParam TipoLogro tipoLogro){
+        return ResponseEntity.ok(logroService.obtenerTodosPorTipoDeLogro(tipoLogro));
+    }
 }
